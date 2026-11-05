@@ -55,7 +55,7 @@ export const USE_CASES: UseCase[] = [
   {
     name: "Referral tracking & 24-hour clock", phase: 1, exec: "Workflow",
     why: "Status, deadlines and escalation are rules. Records contain member data, so AI stays off.",
-    tools: ["Jotform connector", "Power Automate", "Dataverse (PHI environment)", "Power Apps"],
+    tools: ["Jotform connector or custom Next.js form", "Power Automate", "Dataverse (PHI environment)", "Power Apps"],
     access: ["Intake coordinators: referrals assigned to them", "Program lead: all referrals in program", "Executives: counts only, no member detail"],
     skills: ["Auto-acknowledge referral", "Missing-info checklist", "24 h and stage timers", "Prospect re-check reminders"],
   },

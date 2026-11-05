@@ -27,6 +27,7 @@ const GROUPS: Record<Group, { name: string; center: [number, number, number]; to
 const NODES: Node[] = [
   { id: "rippling", label: "Rippling", group: "sources", phase: 1, role: "HR and recruiting system of record.", works: "Candidate stage changes start HR follow-ups." },
   { id: "jotform", label: "Jotform", group: "sources", phase: 1, role: "Intake and internal forms.", works: "A new submission creates a work item with a checklist." },
+  { id: "webform", label: "Custom intake form (Next.js)", group: "sources", phase: 1, role: "Our own web form, hosted in our cloud, built for our fields.", works: "Referral and HR intake saved straight to Dataverse, no copying from a form vendor." },
   { id: "ringcentral", label: "RingCentral", group: "sources", phase: 1, role: "Phone calls, recordings, transcripts.", works: "Internal call recordings feed the call-to-report flow; member calls wait for Phase 2." },
   { id: "m365", label: "Outlook · Teams", group: "sources", phase: 1, role: "Email, meetings, Teams transcripts.", works: "Teams meeting transcripts become recaps and action items." },
   { id: "quickbooks", label: "QuickBooks", group: "sources", phase: 1, role: "Accounting.", works: "Finance figures for leadership reports, read-only." },
@@ -61,7 +62,7 @@ const NODES: Node[] = [
 ];
 
 const EDGES: [string, string][] = [
-  ["rippling", "custom"], ["jotform", "pa"], ["ringcentral", "custom"], ["m365", "pa"], ["quickbooks", "pa"], ["scans", "ocr"], ["ehr", "rpa"],
+  ["rippling", "custom"], ["jotform", "pa"], ["webform", "dataverse"], ["entra", "webform"], ["ringcentral", "custom"], ["m365", "pa"], ["quickbooks", "pa"], ["scans", "ocr"], ["ehr", "rpa"],
   ["custom", "pa"], ["rpa", "pa"], ["pa", "dataverse"], ["pa", "sharepoint"],
   ["dataverse", "brain"], ["sharepoint", "brain"], ["brain", "gbrain"],
   ["ringcentral", "speech"], ["speech", "aoai"], ["ocr", "search"], ["sharepoint", "search"], ["brain", "search"],

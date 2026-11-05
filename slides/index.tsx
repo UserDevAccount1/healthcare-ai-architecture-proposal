@@ -10,6 +10,7 @@ import Blueprint from "@/components/Blueprint";
 import { extra } from "./extra";
 import { ragDeep } from "./rag-deep";
 import { nurtureSlide } from "./nurture";
+import ShareCard from "@/components/ShareCard";
 
 function Head({ eyebrow, q, title, lede }: { eyebrow: string; q?: string; title: string; lede?: string }) {
   return (
@@ -77,9 +78,9 @@ const followUpJourney: PipelineStep[] = [
 const stackFlow: PipelineStep[] = [
   {
     key: "start", title: "Where data starts", hint: "Tools the team uses today",
-    plain: "Nothing gets replaced. Rippling, Jotform, QuickBooks and RingCentral stay where they are.",
-    tech: "Read-only connections first. Which of these have usable APIs is confirmed in discovery.",
-    tools: ["Rippling", "Jotform", "RingCentral", "QuickBooks", "Slack", "Email"],
+    plain: "Nothing gets replaced. Rippling, QuickBooks and RingCentral stay where they are. For intake, there's a better option than Jotform: our own web form that saves straight into our database.",
+    tech: "Read-only connections first; which systems have usable APIs is confirmed in discovery. Intake alternative: a custom form built in Next.js, hosted in the organization's own Azure tenant, writing directly to Dataverse through its API. No third-party form vendor holds referral data, fields match our record exactly, and nothing is typed twice.",
+    tools: ["Rippling", "Jotform (today)", "Custom intake form · Next.js (option)", "RingCentral", "QuickBooks", "Slack", "Email"],
   },
   {
     key: "connect", title: "Connect", hint: "Power Automate",
@@ -144,6 +145,7 @@ const core: SlideDef[] = [
           ))}
         </div>
         <p className="text-body-secondary mb-0" style={{ fontSize: ".85em" }}>Built on Microsoft 365 and Power Platform: Copilot Studio, Power Automate, Dataverse, Power Apps, Power BI, Teams, SharePoint.</p>
+        <ShareCard />
       </div>
     ),
     notes: [
@@ -294,8 +296,15 @@ const core: SlideDef[] = [
           lede="Power Platform and Copilot Studio cover integration, tracking, AI and reporting under one licence family, one sign-in and one set of security controls." />
         <Pipeline steps={withOutputs(stackFlow, stackOut)} label="Technology pipeline" />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
-          <div className="col-12 col-lg-6"><Plain>Data moves left to right: it starts in today&rsquo;s tools, gets connected, tracked in one place, gets AI help only where useful, and shows up where people already work.</Plain></div>
-          <div className="col-12 col-lg-6">
+          <div className="col-12 col-lg-4"><Plain>Data moves left to right: it starts in today&rsquo;s tools, gets connected, tracked in one place, gets AI help only where useful, and shows up where people already work.</Plain></div>
+          <div className="col-12 col-lg-4">
+            <div className="panel is-pine h-100">
+              <span className="label">Intake option · our own form</span>
+              <p className="mt-1 mb-1"><b>Jotform</b>: quick to start, but data sits with another vendor and must be copied across.</p>
+              <p className="mb-0"><b>Custom Next.js form</b>: our branding and fields, validation and missing-info checks built in, saves straight to Dataverse, and works on any phone. It runs in our own cloud, so the HIPAA setup stays in our hands.</p>
+            </div>
+          </div>
+          <div className="col-12 col-lg-4">
             <div className="panel h-100">
               <span className="label">Confirm in discovery</span>
               <p className="mt-1">Which Microsoft 365 and Power Platform licences exist today, whether staff are on Teams or Slack, and which Microsoft services are covered by the organization&rsquo;s HIPAA BAA with Microsoft.</p>
@@ -602,7 +611,7 @@ const core: SlideDef[] = [
           <div className="col-12 col-lg-5">
             <div className="panel is-pine h-100">
               <h3>Start now vs. needs approval</h3>
-              <p className="mb-1"><span className="chip now">now</span> single intake form, 24-hour clock, checklists, reminders to staff, escalation, management counts.</p>
+              <p className="mb-1"><span className="chip now">now</span> single intake form (Jotform, or our own Next.js form writing straight to Dataverse), 24-hour clock, checklists, reminders to staff, escalation, management counts.</p>
               <p className="mb-0"><span className="chip gate">after approval</span> AI extraction from referral documents, drafted outreach, note summaries, SMS check-ins.</p>
             </div>
           </div>
@@ -627,11 +636,11 @@ const core: SlideDef[] = [
         <RoadmapGantt />
         <div className="gate-list">
           {[
-            ["Discovery", "Process maps, time-study baseline, licence & API check, approval criteria.", "Baseline measured; pilot scope signed off."],
-            ["Prototype", "Dataverse tables + HR template in a DEV environment; Teams reminders.", "HR confirms it matches real work."],
-            ["Pilot", "One HR team live from the QA→PROD pipeline; weekly metrics.", "Hours down vs baseline; adoption holding."],
-            ["Production", "All HR; monitoring, runbooks, access review, support owner.", "Security review passed; alerting live."],
-            ["Expansion", "Referral template, knowledge assistant, CEO brief; Phase 2 once approved.", "New templates reuse the engine."],
+            ["Discovery", "Process maps, two-week time-study baseline, licence and API check, approval criteria from governing bodies.", "Baseline hours measured · APIs and licences confirmed · pilot scope and success measures signed off."],
+            ["Prototype", "Dataverse tables + HR template in DEV with sample data; Teams reminders; drafting tested.", "HR walks through real cases and agrees it fits · data model holds every needed field · failed runs alert someone."],
+            ["Pilot", "One HR team live through the QA → PROD pipeline; weekly metrics review.", "Hours down vs baseline · nothing overdue goes unseen · most AI drafts sent with light edits · still used after 4 weeks."],
+            ["Production", "All of HR; monitoring, runbooks, access review, named support owner.", "Security and access review passed · alerting and rollback tested · support owner in place."],
+            ["Expansion", "Referral template, knowledge assistant, CEO brief; Phase 2 once approved.", "Each new workflow is a template, not new code · Phase 2 only with written approval and confirmed BAA scope."],
           ].map(([t, b, e]) => (
             <div className="gate" key={t}>
               <h3>{t}</h3>
@@ -648,6 +657,7 @@ const core: SlideDef[] = [
             <li>Start the approval conversation with the governing bodies now, in parallel</li>
           </ol>
         </div>
+        <ShareCard compact />
       </>
     ),
     notes: [

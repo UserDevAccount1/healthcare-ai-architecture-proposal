@@ -61,7 +61,7 @@ export const followUpOut: Record<string, Out> = {
 export const stackOut: Record<string, Out> = {
   start: {
     io: { in: "Day-to-day work in today's tools", does: "Nothing changes for staff; we only read from these", out: "Events: new form, stage change, new recording" },
-    preview: <ListMock where="Connected sources" rows={[{ l: "Rippling", badge: "API · confirm", tone: "warn" }, { l: "Jotform", badge: "Connector", tone: "ok" }, { l: "RingCentral", badge: "API · confirm", tone: "warn" }, { l: "Outlook · Teams", badge: "Built in", tone: "ok" }, { l: "QuickBooks", badge: "Connector", tone: "ok" }]} />,
+    preview: <ListMock where="Connected sources" rows={[{ l: "Rippling", badge: "API · confirm", tone: "warn" }, { l: "Jotform", badge: "Connector", tone: "ok" }, { l: "Custom intake form (Next.js)", badge: "Option · direct to Dataverse", tone: "ok" }, { l: "RingCentral", badge: "API · confirm", tone: "warn" }, { l: "Outlook · Teams", badge: "Built in", tone: "ok" }, { l: "QuickBooks", badge: "Connector", tone: "ok" }]} />,
   },
   connect: {
     io: { in: "An event from a source system", does: "A flow maps the fields and calls the next step, retrying on errors", out: "Clean data passed to Dataverse" },
