@@ -2,7 +2,7 @@
 
 A web slide deck presenting an AI solution architecture for a healthcare services organization. It covers follow-up orchestration, a pilot that uses no PHI, and a governed path to AI on member-level data.
 
-**Live:** https://gabrielbextconsultancy-hash.github.io/healthcare-ai-architecture-proposal/
+**Live:** https://userdevaccount1.github.io/healthcare-ai-architecture-proposal/
 
 ## Presenting
 
