@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 export type PipelineStep = {
   key: string;
@@ -15,6 +15,10 @@ export type PipelineStep = {
   /** tools used at this step, shown as chips */
   tools?: string[];
   tone?: "pine" | "amber" | "crit" | "muted";
+  /** what this node receives, does, and hands on */
+  io?: { in: string; does: string; out: string };
+  /** example of what this node produces */
+  preview?: ReactNode;
 };
 
 type Props = {
@@ -59,6 +63,7 @@ export default function Pipeline({ steps, label, numbered = true }: Props) {
               }}
             >
               {numbered && <span className="pipeline-num">{i + 1}</span>}
+              {i === steps.length - 1 && st.preview && <span className="pipeline-out-tag">Output</span>}
               <span className="pipeline-title">{st.title}</span>
               <span className="pipeline-hint">{st.hint}</span>
             </button>
@@ -78,14 +83,21 @@ export default function Pipeline({ steps, label, numbered = true }: Props) {
             <button type="button" className="btn-deck" onClick={(e) => { e.stopPropagation(); setActive((a) => Math.min(steps.length - 1, a + 1)); setPlaying(false); }} disabled={active === steps.length - 1} aria-label="Next step">›</button>
           </div>
         </div>
+        {s.io && (
+          <div className="pipeline-io" aria-label="What this step processes">
+            <div><span className="label">Goes in</span><p>{s.io.in}</p></div>
+            <span className="pipeline-io-arrow" aria-hidden="true">→</span>
+            <div><span className="label">What happens</span><p>{s.io.does}</p></div>
+            <span className="pipeline-io-arrow" aria-hidden="true">→</span>
+            <div className="is-out"><span className="label">Comes out</span><p>{s.io.out}</p></div>
+          </div>
+        )}
         <div className="row g-3">
-          <div className="col-12 col-lg-6">
+          <div className={`col-12 ${s.preview ? "col-xl-6" : ""}`}>
             <div className="pipeline-plain">
               <span className="label">In plain words</span>
               <p>{s.plain}</p>
             </div>
-          </div>
-          <div className="col-12 col-lg-6">
             <span className="label">Behind the scenes</span>
             <p className="mb-2">{s.tech}</p>
             {s.tools && (
@@ -94,6 +106,15 @@ export default function Pipeline({ steps, label, numbered = true }: Props) {
               </div>
             )}
           </div>
+          {s.preview && (
+            <div className="col-12 col-xl-6">
+              <div className="d-flex justify-content-between align-items-baseline mb-1">
+                <span className="label">{active === steps.length - 1 ? "Final output · example" : "Output at this step · example"}</span>
+                <span className="sample-tag">Example</span>
+              </div>
+              {s.preview}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import type { SlideDef } from "./types";
+import { withOutputs, followUpOut, stackOut } from "./outputs";
 import { appendix } from "./appendix";
 import {
   ArchitectureDiagram, LifecycleDiagram, PhaseBoundaryDiagram, RagDiagram, ReferralDiagram,
@@ -8,6 +9,7 @@ import { HoursChart, RoadmapGantt, ToolSplit } from "@/components/charts/Charts"
 import Blueprint from "@/components/Blueprint";
 import { extra } from "./extra";
 import { ragDeep } from "./rag-deep";
+import { nurtureSlide } from "./nurture";
 
 function Head({ eyebrow, q, title, lede }: { eyebrow: string; q?: string; title: string; lede?: string }) {
   return (
@@ -160,7 +162,7 @@ const core: SlideDef[] = [
       <>
         <Head eyebrow="The plan in one picture" title="How a follow-up will move, from start to finish"
           lede="Click any step, or press Play, to follow one item through. Each step shows what changes for staff, and the tool that does it." />
-        <Pipeline steps={followUpJourney} label="Follow-up journey" />
+        <Pipeline steps={withOutputs(followUpJourney, followUpOut)} label="Follow-up journey" />
         <Plain>Every follow-up follows the same seven steps. Only two of them (writing the reminder and the summary) use AI. The rest are simple rules that always behave the same way.</Plain>
       </>
     ),
@@ -290,7 +292,7 @@ const core: SlideDef[] = [
       <>
         <Head eyebrow="Recommended tech stack" title="Built on Microsoft tools, connected left to right"
           lede="Power Platform and Copilot Studio cover integration, tracking, AI and reporting under one licence family, one sign-in and one set of security controls." />
-        <Pipeline steps={stackFlow} label="Technology pipeline" />
+        <Pipeline steps={withOutputs(stackFlow, stackOut)} label="Technology pipeline" />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
           <div className="col-12 col-lg-6"><Plain>Data moves left to right: it starts in today&rsquo;s tools, gets connected, tracked in one place, gets AI help only where useful, and shows up where people already work.</Plain></div>
           <div className="col-12 col-lg-6">
@@ -657,9 +659,9 @@ const core: SlideDef[] = [
 ];
 
 const ORDER = [
-  "title", "really-solving", "one-picture", "problems", "pilot", "works-now", "demo",
+  "title", "really-solving", "one-picture", "problems", "pilot", "nurture", "works-now", "demo",
   "stack", "architecture", "constellation", "mapping", "ai-vs-automation", "blueprint",
   "orchestration", "security", "roles", "knowledge", "rag-deep", "rag", "brain", "referral", "roadmap",
 ];
-const byId = new Map<string, SlideDef>([...core.map((c) => [c.id, c] as const), ...Object.entries(extra), ["rag-deep", ragDeep] as const]);
+const byId = new Map<string, SlideDef>([...core.map((c) => [c.id, c] as const), ...Object.entries(extra), ["rag-deep", ragDeep] as const, ["nurture", nurtureSlide] as const]);
 export const slides: SlideDef[] = [...ORDER.map((id) => byId.get(id)!), ...appendix];

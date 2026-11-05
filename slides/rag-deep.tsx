@@ -1,4 +1,5 @@
 import type { SlideDef } from "./types";
+import { withOutputs, prepareOut, answerOut } from "./outputs";
 import Pipeline, { type PipelineStep } from "@/components/Pipeline";
 import { MeaningMap } from "@/components/diagrams";
 
@@ -98,14 +99,14 @@ export const ragDeep: SlideDef = {
       <div className="row g-3">
         <div className="col-12 col-xl-7 d-flex flex-column gap-2">
           <span className="label">Part 1 · Preparing documents (once, then on every update)</span>
-          <Pipeline steps={prepare} label="Preparing documents" />
+          <Pipeline steps={withOutputs(prepare, prepareOut)} label="Preparing documents" />
         </div>
         <div className="col-12 col-xl-5">
           <MeaningMap />
         </div>
       </div>
       <span className="label">Part 2 · Answering a question (every time someone asks)</span>
-      <Pipeline steps={answer} label="Answering a question" />
+      <Pipeline steps={withOutputs(answer, answerOut)} label="Answering a question" />
       <Plain>The AI doesn&rsquo;t &ldquo;know&rdquo; your policies. It looks them up every time, reads the best few passages, answers only from them and shows its source. If the passage isn&rsquo;t there, it says so.</Plain>
     </>
   ),

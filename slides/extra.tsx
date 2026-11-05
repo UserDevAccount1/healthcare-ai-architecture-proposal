@@ -1,4 +1,5 @@
 import type { SlideDef } from "./types";
+import { withOutputs, ragDocsOut } from "./outputs";
 import Pipeline, { type PipelineStep } from "@/components/Pipeline";
 import CallDemo from "@/components/CallDemo";
 import Constellation from "@/components/Constellation";
@@ -231,7 +232,7 @@ export const extra: Record<string, SlideDef> = {
       <>
         <Head eyebrow="Retrieval (RAG) at a high level · with OCR" title="Find any document or detail, with the source attached"
           lede="The same retrieval pattern serves policies today, and referral packets and member records after approval, each in its own locked zone." />
-        <Pipeline steps={ragFlow} label="Document retrieval pipeline" />
+        <Pipeline steps={withOutputs(ragFlow, ragDocsOut)} label="Document retrieval pipeline" />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
           {[
             ["Phase 1 · now", "“What’s our PTO carry-over rule?” · “Find the onboarding checklist for drivers” · “What did we decide about weekend coverage?”", "now"],

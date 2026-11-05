@@ -1,4 +1,5 @@
 import type { SlideDef } from "./types";
+import { withOutputs, almOut } from "./outputs";
 import Pipeline, { type PipelineStep } from "@/components/Pipeline";
 
 const alm: PipelineStep[] = [
@@ -164,7 +165,7 @@ export const appendix: SlideDef[] = [
     content: (
       <>
         <AHead code="A5" title="How changes ship safely: DEV → QA → PROD" />
-        <Pipeline steps={alm} label="Release pipeline" />
+        <Pipeline steps={withOutputs(alm, almOut)} label="Release pipeline" />
       </>
     ),
     notes: ["This is the application lifecycle management answer: three environments, managed solutions, pipeline approvals, and rollback."],
