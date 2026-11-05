@@ -1,0 +1,9 @@
+:HL["/healthcare-ai-architecture-proposal/_next/static/chunks/1n32kpu0dgw07.css","style"]
+:HL["/healthcare-ai-architecture-proposal/_next/static/chunks/0fxi_h-xzasxo.css","style"]
+:HL["/healthcare-ai-architecture-proposal/_next/static/chunks/2b0px94qnbjfq.css","style"]
+:HL["/healthcare-ai-architecture-proposal/_next/static/media/8056169c9d560660-s.p.41rroleoq1br7.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/healthcare-ai-architecture-proposal/_next/static/media/9a321a2c78eff0b5-s.p.1bkzbscqrt8rl.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/healthcare-ai-architecture-proposal/_next/static/media/9d473eb2c81ea1b1-s.p.33u8lzvd44aqk.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/healthcare-ai-architecture-proposal/deck-qr.svg","image"]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"TmG8OBYmBgZ0OkPxJEmYX","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
