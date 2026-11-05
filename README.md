@@ -31,4 +31,13 @@ npm run dev      # http://localhost:3000
 npm run build    # static export to ./out
 ```
 
-Built with Next.js (static export) and Bootstrap 5. Deployed by GitHub Actions on every push to `main`.
+Built with Next.js (static export) and Bootstrap 5.
+
+## Deploying
+
+```bash
+npm run deploy   # builds and pushes ./out to the gh-pages branch
+```
+
+GitHub Pages serves the `gh-pages` branch. The workflow in `.github/workflows/deploy.yml` can take over once GitHub Actions is available on the account: switch the Pages source to "GitHub Actions".
+

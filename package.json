@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "npx serve out -l 4000"
+    "start": "npx serve out -l 4000",
+    "deploy": "bash scripts/deploy-gh-pages.sh"
   },
   "dependencies": {
     "bootstrap": "5.3.8",

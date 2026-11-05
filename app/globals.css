@@ -63,10 +63,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; letter-sp
   padding-block: clamp(20px, 4vh, 48px) 88px;
   padding-left: max(16px, env(safe-area-inset-left, 0px), 4vw);
   padding-right: max(16px, env(safe-area-inset-right, 0px), 4vw);
-  opacity: 0; transform: translateX(3%); pointer-events: none;
-  transition: opacity .35s ease, transform .35s ease;
+  opacity: 0; visibility: hidden; transform: translateX(3%); pointer-events: none;
 }
-.slide.is-active { opacity: 1; transform: none; pointer-events: auto; }
+.slide.is-active { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition: opacity .35s ease, transform .35s ease; }
 .slide.is-past { transform: translateX(-3%); }
 .slide-inner { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.1rem; min-height: 100%; }
 @media (prefers-reduced-motion: reduce) { .slide, .deck-progress > span { transition: none; } }
@@ -170,11 +169,11 @@ pre.code {
 /* ---------- print: all slides stacked ---------- */
 .print-mode .deck { position: static; }
 .print-mode .deck-stage { overflow: visible; }
-.print-mode .slide { position: relative; opacity: 1; transform: none; pointer-events: auto; overflow: visible; min-height: 100vh; break-after: page; padding-bottom: 32px; }
+.print-mode .slide { position: relative; opacity: 1; visibility: visible; transform: none; pointer-events: auto; overflow: visible; min-height: 100vh; break-after: page; padding-bottom: 32px; }
 .print-mode .deck-bar, .print-mode .deck-progress, .print-mode .notes-panel { display: none; }
 @media print {
   .deck-bar, .deck-progress, .notes-panel, .overview { display: none !important; }
   .deck { position: static; } .deck-stage { overflow: visible; }
-  .slide { position: relative; opacity: 1; transform: none; overflow: visible; break-after: page; }
+  .slide { position: relative; opacity: 1; visibility: visible; transform: none; overflow: visible; break-after: page; }
   figure.diagram svg { min-width: 0; }
 }
