@@ -73,122 +73,37 @@ export const appendix: SlideDef[] = [
     notes: ["Use this slide if asked 'what would you need to know first?'. Each answer changes a specific box in the architecture diagram."],
   },
   {
-    id: "a2-data-model",
-    section: "A2 · Data model",
-    title: "Data model & API pattern",
+    id: "a2-guardrails",
+    section: "A2 · AI guardrails",
+    title: "How AI answers are kept safe",
     content: (
       <>
-        <AHead code="A2" title="Data model & API pattern" />
-        <div className="row g-3">
-          <div className="col-12 col-lg-6">
-            <pre className="code">{`WorkItem
-  id              uuid
-  template        "hr.interview_feedback" | "referral.missing_docs" | ...
-  subject_ref     external id (candidate, referral)  -- no PHI in Phase 1
-  owner_id        user id (never a group)
-  waiting_on      "internal" | "external:<party>"
-  status          open | waiting | due_soon | overdue | escalated | resolved
-  due_at          timestamptz   (from template SLA)
-  sla_paused      { reason, until } | null
-  checklist       [{ key, label, done_at }]
-  escalation_lvl  0..3
-  created_at / resolved_at
-
-Event   (append-only)
-  id, work_item_id, type, actor, payload_json, at
-
-Template
-  key, item_types, checklist, sla_hours, escalation_path[], channels[]
-
-PolicyDoc
-  id, title, owner_id, authority_rank, audience_roles[],
-  version, effective_from, expires_at, status (draft|approved|superseded)`}</pre>
-          </div>
-          <div className="col-12 col-lg-6 d-flex flex-column gap-3">
-            <pre className="code">{`# inbound (from integration layer)
-POST /events
-{ "source": "rippling",
-  "type": "candidate.stage_changed",
-  "external_id": "cand_8812",
-  "data": { "stage": "interviewed",
-            "interviewers": ["u_17","u_42"] } }
-
-# engine applies template rules -> work items
-GET  /work-items?owner=me&status=overdue
-POST /work-items/{id}/resolve
-POST /work-items/{id}/snooze { "until": "...", "reason": "..." }`}</pre>
-            <pre className="code">{`# SLA sweep (every 15 min, deterministic)
-for item in open_items():
-    pct = elapsed_business_hours(item) / item.sla_hours
-    if pct >= 1.0 and item.status != "overdue":
-        mark(item, "overdue"); nudge(item.owner)
-    elif pct >= 1.0 + item.escalation_lvl * 0.5:
-        escalate(item)   # owner -> manager -> lead
-    elif pct >= 0.75:
-        mark(item, "due_soon")`}</pre>
-          </div>
+        <AHead code="A2" title="How AI answers are kept safe" />
+        <div className="row g-3" style={{ fontSize: ".9em" }}>
+          {[
+            ["It only sees what it needs", "Each request contains only the fields the task needs, picked from an approved list. The AI never browses whole records."],
+            ["It only answers from sources", "Policy answers must quote the approved document. If the quote can't be matched to a real passage, the answer is replaced with “no approved answer”."],
+            ["It drafts, people decide", "Messages to candidates go to an approval queue. Hiring, discipline and eligibility decisions are never made by AI."],
+            ["It stops at member data", "If member information shows up in a Phase 1 request, the request is blocked and logged instead of processed."],
+            ["It is checked every week", "A person reviews a sample of AI drafts and answers each week. Scores are kept, so changes can't quietly make it worse."],
+            ["It is logged", "Every question, answer and draft is logged with who asked, kept for a set retention period, and visible to auditors."],
+          ].map(([k, v]) => (
+            <div className="col-12 col-md-6 col-xl-4" key={k}>
+              <div className="panel h-100"><h3>{k}</h3><p className="mb-0">{v}</p></div>
+            </div>
+          ))}
         </div>
       </>
     ),
-    notes: ["The SLA sweep is plain code, not AI. It is explainable to an auditor line by line."],
-  },
-  {
-    id: "a3-prompts",
-    section: "A3 · Prompts",
-    title: "Example prompts & guardrails",
-    content: (
-      <>
-        <AHead code="A3" title="Example prompts & guardrails" />
-        <div className="row g-3">
-          <div className="col-12 col-lg-6">
-            <span className="label">Nudge drafting (Phase 1)</span>
-            <pre className="code mt-1">{`SYSTEM: You write short, polite internal reminders.
-Use only the facts in <item>. Do not invent dates,
-names or commitments. Max 60 words. No member data
-will ever be provided; if any appears, reply
-"REDACT_REQUIRED" and nothing else.
-
-<item>
-template: hr.interview_feedback
-owner_first_name: Dana
-candidate_role: Care Coordinator
-interview_date: 2026-10-28
-days_waiting: 4
-</item>`}</pre>
-          </div>
-          <div className="col-12 col-lg-6">
-            <span className="label">Grounded policy answer</span>
-            <pre className="code mt-1">{`SYSTEM: Answer only from <sources>. Every sentence
-must cite [doc_id §section v#]. If the sources do not
-answer the question, reply exactly:
-"NO_AUTHORITATIVE_ANSWER" plus the closest source.
-Never give legal, clinical or HR decisions.
-
-<sources> ...retrieved, permission-filtered,
-current-version passages... </sources>
-<question> How many PTO days carry over? </question>`}</pre>
-          </div>
-        </div>
-        <div className="panel">
-          <h3>Guardrails in code, not just in prompts</h3>
-          <ul className="mb-0" style={{ fontSize: ".9em" }}>
-            <li>Field allowlist builds the &lt;item&gt; block. The model never sees raw records.</li>
-            <li>Citation check: an answer whose citations don’t match retrieved passages is replaced with the no-answer response.</li>
-            <li>Outbound messages to candidates go to an approval queue; internal nudges can auto-send after a quality trial.</li>
-            <li>A weekly sample of prompts and responses is reviewed by a person, with scores kept for regression testing.</li>
-          </ul>
-        </div>
-      </>
-    ),
-    notes: ["The sentinel strings (REDACT_REQUIRED, NO_AUTHORITATIVE_ANSWER) let code handle failure deterministically instead of trusting prose."],
+    notes: ["These guardrails are enforced in the flows and settings, not only in the prompt wording."],
   },
   {
     id: "a4-ceo",
-    section: "A4 · CEO brief",
+    section: "A3 · CEO brief",
     title: "Chief-of-staff brief, maintained by nobody",
     content: (
       <>
-        <AHead code="A4" title="Chief-of-staff brief, maintained by nobody" />
+        <AHead code="A3" title="Chief-of-staff brief, maintained by nobody" />
         <p className="lede">The CEO doesn’t want another dashboard to maintain. The brief is generated from the orchestration engine’s own data, so it is never maintained by hand.</p>
         <div className="row g-3" style={{ fontSize: ".9em" }}>
           <div className="col-12 col-lg-6">
@@ -221,17 +136,17 @@ current-version passages... </sources>
   },
   {
     id: "a5-calls",
-    section: "A5 · Call intelligence",
+    section: "A4 · Call intelligence",
     title: "Call intelligence (Phase 2)",
     content: (
       <>
-        <AHead code="A5" title="Call intelligence (Phase 2, approval-gated)" />
+        <AHead code="A4" title="Call intelligence (Phase 2, approval-gated)" />
         <div className="row g-3" style={{ fontSize: ".9em" }}>
           {[
             ["Flow", "RingCentral recording → transcript (BAA-covered service) → summary + action items → care manager reviews → approved items become work items."],
             ["Value", "Less documentation time, action items no longer lost after calls, unresolved issues flagged for follow-up."],
             ["Preconditions", "Governing-body approval, a BAA with every processor, member consent and recording-notice review, and a retention policy for transcripts."],
-            ["Start safely", "Pilot on internal staff calls (HR, operations) with no member data, to measure summary quality before Phase 2."],
+            ["Start safely", "The demo slide shows the Phase 1 version: internal staff calls and Teams meetings with no member data. It measures summary quality before Phase 2."],
           ].map(([k, v]) => (
             <div className="col-12 col-md-6" key={k}>
               <div className={`panel h-100 ${k === "Preconditions" ? "is-signal" : ""}`}><span className="label">{k}</span><p className="mt-1">{v}</p></div>
@@ -244,11 +159,11 @@ current-version passages... </sources>
   },
   {
     id: "a6-alm",
-    section: "A6 · ALM",
+    section: "A5 · ALM",
     title: "How changes ship safely (DEV → QA → PROD)",
     content: (
       <>
-        <AHead code="A6" title="How changes ship safely: DEV → QA → PROD" />
+        <AHead code="A5" title="How changes ship safely: DEV → QA → PROD" />
         <Pipeline steps={alm} label="Release pipeline" />
       </>
     ),
@@ -256,11 +171,11 @@ current-version passages... </sources>
   },
   {
     id: "a7-skills",
-    section: "A7 · Team skills",
+    section: "A6 · Team skills",
     title: "Skills needed to build and run it",
     content: (
       <>
-        <AHead code="A7" title="Skills needed to build and run it" />
+        <AHead code="A6" title="Skills needed to build and run it" />
         <div className="row g-3" style={{ fontSize: ".88em" }}>
           {[
             ["AI solutions architect", "Lead", ["Overall design and use-case triage (agent vs workflow)", "Security and governance design", "Stakeholder workshops, translating needs into plans"]],
@@ -288,11 +203,11 @@ current-version passages... </sources>
   },
   {
     id: "a8-glossary",
-    section: "A8 · Glossary",
+    section: "A7 · Glossary",
     title: "Glossary in plain words",
     content: (
       <>
-        <AHead code="A8" title="Glossary in plain words" />
+        <AHead code="A7" title="Glossary in plain words" />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
           {[
             ["PHI", "Protected Health Information: anything that identifies a member together with their health or care."],

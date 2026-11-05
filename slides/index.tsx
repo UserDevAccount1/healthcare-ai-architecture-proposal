@@ -6,6 +6,8 @@ import {
 import Pipeline, { type PipelineStep } from "@/components/Pipeline";
 import { HoursChart, RoadmapGantt, ToolSplit } from "@/components/charts/Charts";
 import Blueprint from "@/components/Blueprint";
+import { extra } from "./extra";
+import { ragDeep } from "./rag-deep";
 
 function Head({ eyebrow, q, title, lede }: { eyebrow: string; q?: string; title: string; lede?: string }) {
   return (
@@ -459,7 +461,7 @@ const core: SlideDef[] = [
             ["Access", "Entra ID SSO + MFA, Dataverse security roles, least privilege, quarterly access review."],
             ["Encryption", "TLS in transit, encryption at rest by default; customer-managed keys for the Phase 2 environment."],
             ["Audit & logging", "Dataverse auditing, Purview audit log, Copilot Studio conversation transcripts with a set retention period."],
-            ["Model data use", "Azure OpenAI through Copilot Studio: prompts are not used to train models. Consumer AI tools are blocked by policy."],
+            ["Model data & third-party AI", "Azure OpenAI through Copilot Studio: prompts are not used to train models. Any other AI service (for example self-hosted OCR or GBrain) must run in our own cloud or sign a BAA. Consumer AI tools are blocked."],
             ["Leakage & hallucination", "Purview DLP policies, a field allowlist before any AI call, answers must cite sources, a person approves outbound text."],
           ].map(([k, v]) => (
             <div className="col-12 col-md-6 col-xl-4" key={k}>
@@ -654,4 +656,10 @@ const core: SlideDef[] = [
   },
 ];
 
-export const slides: SlideDef[] = [...core, ...appendix];
+const ORDER = [
+  "title", "really-solving", "one-picture", "problems", "pilot", "works-now", "demo",
+  "stack", "architecture", "constellation", "mapping", "ai-vs-automation", "blueprint",
+  "orchestration", "security", "roles", "knowledge", "rag-deep", "rag", "brain", "referral", "roadmap",
+];
+const byId = new Map<string, SlideDef>([...core.map((c) => [c.id, c] as const), ...Object.entries(extra), ["rag-deep", ragDeep] as const]);
+export const slides: SlideDef[] = [...ORDER.map((id) => byId.get(id)!), ...appendix];

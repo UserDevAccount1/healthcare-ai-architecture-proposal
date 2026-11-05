@@ -198,3 +198,73 @@ export function ReferralDiagram() {
     </Figure>
   );
 }
+
+/* ---------------------------------------------------------------- company brain */
+export function BrainDiagram() {
+  const ins = ["Meeting & call recaps", "Decisions log", "Policy & SOP changes", "Work-item history", "Owners & org chart", "Unanswered questions"];
+  const outs = ["CEO weekly brief", "Policy & knowledge assistant", "New-staff onboarding", "Meeting prep", "“Who owns this?” answers", "Consistent ER guidance"];
+  const rowY = (i: number) => 52 + i * 46;
+  return (
+    <Figure
+      viewBox="0 0 1150 340"
+      label="Company brain: meeting recaps, decisions, policy changes, work history, owners and unanswered questions flow in; the brain stores typed, cited pages; it feeds the CEO brief, the knowledge assistant, onboarding, meeting prep and ownership answers."
+      caption="The brain only stores what the organization already knows, with its source attached. Agents read from it and never invent facts into it. Nothing member-level goes in."
+    >
+      <Label x={130} y={30}>WHAT FLOWS IN (AUTOMATICALLY)</Label>
+      <Label x={1020} y={30}>WHAT IT POWERS</Label>
+      {ins.map((t, i) => (
+        <g key={t}>
+          <Box x={20} y={rowY(i)} w={220} h={36} lines={[t]} bold={false} />
+          <Arrow x1={240} y1={rowY(i) + 18} x2={418} y2={170} />
+        </g>
+      ))}
+      <rect x={420} y={60} width={310} height={220} rx={14} style={{ fill: "var(--amber-soft)", stroke: "var(--amber)", strokeWidth: 2 }} />
+      <text x={575} y={96} textAnchor="middle" style={{ fill: "var(--fg)", fontSize: 18, fontWeight: 700, fontFamily: "var(--font-display)" }}>Company brain</text>
+      <Label x={575} y={118}>TYPED PAGES · EACH FACT HAS A SOURCE</Label>
+      {["Person / role", "Process", "Decision", "Meeting", "Policy", "Vendor"].map((t, i) => (
+        <Box key={t} x={440 + (i % 3) * 98} y={134 + Math.floor(i / 3) * 52} w={88} h={40} lines={[t]} bold={false} size={12} />
+      ))}
+      <Label x={575} y={264}>OWNER CAN CORRECT · STALE PAGES FLAGGED</Label>
+      {outs.map((t, i) => (
+        <g key={t}>
+          <Arrow x1={732} y1={170} x2={908} y2={rowY(i) + 18} />
+          <Box x={910} y={rowY(i)} w={220} h={36} lines={[t]} tone="pine" bold={false} />
+        </g>
+      ))}
+    </Figure>
+  );
+}
+
+/* ---------------------------------------------------------------- embeddings "map of meaning" */
+export function MeaningMap() {
+  const pts: { x: number; y: number; t: string; near?: boolean }[] = [
+    { x: 300, y: 92, t: "PTO carry-over rules (HR Policy 4.2)", near: true },
+    { x: 360, y: 140, t: "Unused vacation at year end (FAQ)", near: true },
+    { x: 250, y: 150, t: "Leave request steps (SOP 12)", near: true },
+    { x: 560, y: 70, t: "Parking at the main office" },
+    { x: 620, y: 175, t: "Mileage reimbursement" },
+    { x: 110, y: 210, t: "Background check vendors" },
+    { x: 520, y: 225, t: "Referral intake checklist" },
+  ];
+  const q = { x: 318, y: 124 };
+  return (
+    <Figure
+      viewBox="0 0 760 260"
+      label="A map of meaning: the question 'How many vacation days roll over?' lands close to passages about PTO carry-over and unused vacation, and far from parking or mileage passages, even though it shares few exact words with them."
+      caption="Embeddings place every passage on a map by meaning. A question lands near the passages that mean the same thing, even when the words differ: “vacation days roll over” finds “PTO carry-over”."
+    >
+      <rect x={1} y={1} width={758} height={258} rx={10} style={{ fill: "var(--surface-2)", stroke: "var(--line)" }} />
+      <circle cx={q.x} cy={q.y} r={78} style={{ fill: "var(--pine-soft)", stroke: "var(--pine)", strokeDasharray: "5 4" }} />
+      {pts.map((p) => (
+        <g key={p.t}>
+          {p.near && <line x1={q.x} y1={q.y} x2={p.x} y2={p.y} style={{ stroke: "var(--pine)", strokeWidth: 1.4 }} />}
+          <circle cx={p.x} cy={p.y} r={6} style={{ fill: p.near ? "var(--pine)" : "var(--muted)" }} />
+          <text x={p.x + 10} y={p.y + 4} style={{ fill: p.near ? "var(--fg)" : "var(--muted)", fontSize: 12, fontFamily: "var(--font-body)" }}>{p.t}</text>
+        </g>
+      ))}
+      <circle cx={q.x} cy={q.y} r={9} style={{ fill: "var(--amber)" }} />
+      <text x={q.x - 14} y={q.y + 30} textAnchor="end" style={{ fill: "var(--amber)", fontSize: 12.5, fontWeight: 700, fontFamily: "var(--font-body)" }}>“How many vacation days roll over?”</text>
+      <Label x={20} y={26} anchor="start">MAP OF MEANING (SIMPLIFIED TO 2D)</Label>
+    </Figure>
+  );
+}

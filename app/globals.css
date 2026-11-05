@@ -257,6 +257,65 @@ pre.code {
 .roles .lvl-none { color: var(--line); }
 .roles .lvl-gate { color: var(--amber); }
 
+/* ---------- call-to-report demo ---------- */
+.demo { display: flex; flex-direction: column; gap: .7rem; min-width: 0; }
+.sample-tag { font-family: var(--font-mono); font-size: .7rem; color: var(--amber); border: 1px dashed var(--amber); padding: .1rem .45rem; border-radius: 4px; }
+.demo-steps { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+.demo-step {
+  display: inline-flex; align-items: center; gap: .45rem; background: var(--surface); color: var(--fg);
+  border: 1.5px solid var(--line); border-radius: 999px; padding: .3rem .8rem .3rem .35rem; font-size: .85rem;
+}
+.demo-step.is-done { border-color: var(--pine); }
+.demo-step.is-active { background: var(--pine-soft); border-color: var(--pine); font-weight: 600; }
+.demo-stage { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; min-height: 280px; }
+.demo-blocked { border-left: 4px solid var(--amber); padding-left: 1rem; }
+.wave { display: flex; align-items: center; gap: 3px; height: 110px; }
+.wave span { flex: 1; background: var(--c1); border-radius: 2px; opacity: .85; }
+.transcript { background: var(--surface-2); border-radius: 8px; padding: .7rem .9rem; font-size: .9rem; }
+.transcript p { margin: 0 0 .35rem; }
+.fields { margin: 0; display: grid; gap: .35rem; }
+.fields div { display: grid; grid-template-columns: 9rem 1fr; gap: .5rem; border-bottom: 1px dashed var(--line); padding-bottom: .25rem; }
+.fields dt { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); font-weight: 400; text-transform: uppercase; letter-spacing: .06em; }
+.fields dd { margin: 0; font-weight: 600; }
+.paper {
+  background: #fdfdfb; color: #1c2420; max-width: 640px; margin: 0 auto; border-radius: 4px; padding: 1.1rem 1.3rem;
+  box-shadow: 0 10px 28px rgba(0,0,0,.25); font-size: .86rem; border-top: 6px solid #0f5c4d;
+}
+.paper-head { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #d5dbd7; padding-bottom: .5rem; margin-bottom: .6rem; }
+.paper-head b { font-size: 1.1rem; font-family: var(--font-display); }
+.paper-sub { font-size: .72rem; color: #5b6762; }
+.paper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .4rem .9rem; }
+.paper-grid span { display: block; font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: #5b6762; }
+.paper-sec { margin-top: .7rem; font-weight: 700; }
+.paper ol { margin: .2rem 0 .5rem; padding-left: 1.1rem; }
+.paper-foot { border-top: 1px solid #d5dbd7; padding-top: .4rem; font-size: .68rem; color: #5b6762; }
+.mono-path { font-family: var(--font-mono); font-size: .78rem; }
+
+/* ---------- 3D constellation ---------- */
+.constellation-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: .8rem; min-height: 0; }
+@media (max-width: 991px) { .constellation-wrap { grid-template-columns: 1fr; } }
+.constellation {
+  position: relative; height: min(62vh, 560px); min-height: 360px; border-radius: 12px; overflow: hidden;
+  background: radial-gradient(ellipse at 55% 45%, var(--surface-2), var(--bg) 70%); border: 1px solid var(--line);
+}
+.constellation canvas { display: block; }
+.constellation-labels { position: absolute; inset: 0; cursor: grab; }
+.constellation-labels:active { cursor: grabbing; }
+.constellation-label {
+  font-family: var(--font-body); font-size: 11px; color: var(--fg); background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border: 1px solid var(--line); padding: 1px 6px; border-radius: 4px; white-space: nowrap; cursor: pointer; user-select: none;
+}
+.constellation-label.is-phase2 { opacity: .55; border-style: dashed; }
+.constellation-label.is-brain { font-weight: 700; border-color: var(--amber); }
+.constellation-label.is-selected { background: var(--amber); color: var(--bg); border-color: var(--amber); opacity: 1; }
+.constellation-group { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.constellation-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; font-size: .9rem; min-width: 0; }
+.constellation-card h3 { font-size: 1.1rem; }
+
+/* ---------- mapping table ---------- */
+.map-table td, .map-table th { font-size: .82rem; vertical-align: top; }
+.map-table td:first-child { font-weight: 600; }
+
 /* ---------- print: all slides stacked ---------- */
 .print-mode .deck { position: static; }
 .print-mode .deck-stage { overflow: visible; }
