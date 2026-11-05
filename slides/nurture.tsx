@@ -99,9 +99,4 @@ export const nurtureSlide: SlideDef = {
       <Plain>Candidates hear from us at every step, so they don&rsquo;t drift to other offers, and HR stops spending hours on &ldquo;just checking in&rdquo; messages.</Plain>
     </>
   ),
-  notes: [
-    "Rippling stays the candidate record, so there's no second system to maintain. The journey record in Dataverse only tracks timing and messages.",
-    "Measure: time to first response, candidate drop-off by stage, offer-accept rate, 90-day retention, and HR hours on recruiting admin.",
-    "Confirm in discovery: Rippling API access for applicant events, whether RingCentral SMS can be used for candidates, and the opt-in wording.",
-  ],
 };

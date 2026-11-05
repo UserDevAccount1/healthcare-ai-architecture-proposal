@@ -110,9 +110,4 @@ export const ragDeep: SlideDef = {
       <Plain>The AI doesn&rsquo;t &ldquo;know&rdquo; your policies. It looks them up every time, reads the best few passages, answers only from them and shows its source. If the passage isn&rsquo;t there, it says so.</Plain>
     </>
   ),
-  notes: [
-    "Simple RAG is 'search, then answer'. The advanced parts are what make it trustworthy in healthcare: structure-aware chunking, metadata and permission filters, hybrid search, reranking, parent-section context, conflict handling, the groundedness check and an evaluation set.",
-    "The map of meaning is a 2D simplification. Real embeddings have hundreds of dimensions, but the idea of 'close in meaning' is the same.",
-    "Every step maps to an Azure AI Search or Copilot Studio setting. No custom ML training is needed.",
-  ],
 };

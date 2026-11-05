@@ -1,6 +1,6 @@
 import { Arrow, Box, Figure, Label } from "./svg";
 
-/* ---------------------------------------------------------------- Q3 architecture */
+/* ---------------------------------------------------------------- architecture */
 export function ArchitectureDiagram() {
   const colY = 56;
   const src = ["Rippling (HR/ATS)", "Jotform (forms)", "RingCentral", "Email · Slack", "Spreadsheets", "QuickBooks", "Healthcare systems"];
@@ -64,7 +64,7 @@ export function ArchitectureDiagram() {
   );
 }
 
-/* ---------------------------------------------------------------- Q5 work item lifecycle */
+/* ---------------------------------------------------------------- work item lifecycle */
 export function LifecycleDiagram() {
   const y = 70, h = 64, w = 150, gap = 40;
   const states: { t: string[]; tone: "plain" | "pine" | "amber" | "crit" | "muted" }[] = [
@@ -99,7 +99,7 @@ export function LifecycleDiagram() {
   );
 }
 
-/* ---------------------------------------------------------------- Q6 phase boundary */
+/* ---------------------------------------------------------------- phase boundary */
 export function PhaseBoundaryDiagram() {
   return (
     <Figure
@@ -139,7 +139,7 @@ export function PhaseBoundaryDiagram() {
   );
 }
 
-/* ---------------------------------------------------------------- Q7 knowledge assistant */
+/* ---------------------------------------------------------------- knowledge assistant */
 export function RagDiagram() {
   const y = 60, h = 70;
   return (
@@ -167,7 +167,7 @@ export function RagDiagram() {
   );
 }
 
-/* ---------------------------------------------------------------- Q8 referral workflow */
+/* ---------------------------------------------------------------- referral workflow */
 export function ReferralDiagram() {
   const stages = ["Referral", "Intake", "Screening", "Assessment", "Enrollment", "Assignment", "Care plan"];
   const w = 138, gap = 18, x0 = 20, y = 70;

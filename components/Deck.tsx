@@ -14,7 +14,6 @@ function readHash(total: number): number {
 export default function Deck({ slides }: Props) {
   const total = slides.length;
   const [idx, setIdx] = useState(0);
-  const [notes, setNotes] = useState(false);
   const [overview, setOverview] = useState(false);
   const [print, setPrint] = useState(false);
   const touchX = useRef<number | null>(null);
@@ -54,7 +53,6 @@ export default function Deck({ slides }: Props) {
       else if (k === "Home") go(0);
       else if (k === "End") go(total - 1);
       else if (k === "Escape" || k === "o" || k === "O") setOverview((v) => !v);
-      else if (k === "n" || k === "N") setNotes((v) => !v);
       else if (k === "p" || k === "P") setPrint((v) => !v);
     };
     window.addEventListener("keydown", onKey);
@@ -89,12 +87,6 @@ export default function Deck({ slides }: Props) {
           </section>
         ))}
 
-        {notes && !print && (
-          <aside className="notes-panel" aria-label="Speaker notes">
-            <h3>Speaker notes · {idx + 1}</h3>
-            {s.notes.map((p, i) => <p key={i} className="mb-2">{p}</p>)}
-          </aside>
-        )}
 
         {overview && (
           <div className="overview" role="dialog" aria-label="All slides">
@@ -120,9 +112,8 @@ export default function Deck({ slides }: Props) {
           <span className="count">{String(idx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
           <span className="title">{s.section} · {s.title}</span>
           <button type="button" className="btn-deck" aria-pressed={overview} onClick={() => setOverview((v) => !v)}>Slides</button>
-          <button type="button" className="btn-deck" aria-pressed={notes} onClick={() => setNotes((v) => !v)}>Notes</button>
           <button type="button" className="btn-deck d-none d-md-inline-block" aria-pressed={print} onClick={() => setPrint((v) => !v)}>Print view</button>
-          <span className="kbd d-none d-lg-inline">←/→ · O · N · P</span>
+          <span className="kbd d-none d-lg-inline">←/→ · O · P</span>
         </nav>
       </main>
     </div>

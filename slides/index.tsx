@@ -148,11 +148,6 @@ const core: SlideDef[] = [
         <ShareCard />
       </div>
     ),
-    notes: [
-      "Open with the thesis: most of the problems are work that waits without an owner. Buying an AI product won't fix that.",
-      "The 18–29 hours is the sum of the HR estimates in the brief: 10–15 recruiting, 5–8 employee relations, 3–6 onboarding.",
-      "Phase 1 avoids PHI entirely, which is why it can start now.",
-    ],
   },
 
   /* 2 ------------------------------------------------------------ plan in one picture */
@@ -168,20 +163,16 @@ const core: SlideDef[] = [
         <Plain>Every follow-up follows the same seven steps. Only two of them (writing the reminder and the summary) use AI. The rest are simple rules that always behave the same way.</Plain>
       </>
     ),
-    notes: [
-      "Use this slide with non-technical stakeholders before any architecture. Press Play and narrate the steps.",
-      "The same journey applies to interview feedback, missing consents, referral documents and ER action items. Only the template changes.",
-    ],
   },
 
   /* 3 ------------------------------------------------------------ problems */
   {
     id: "problems",
-    section: "Q1 · Problems",
+    section: "Problems",
     title: "The four problems worth solving first",
     content: (
       <>
-        <Head eyebrow="Problem assessment" q="Q1" title="The four problems worth solving first"
+        <Head eyebrow="Where to focus" title="The four problems worth solving first"
           lede="They recur across departments, cost hours or response time we can measure, and share one root cause: nobody can see who owns the next step." />
         <div className="row g-3">
           <div className="col-12 col-xl-6"><HoursChart /></div>
@@ -222,21 +213,16 @@ const core: SlideDef[] = [
         <Plain>The biggest problem isn&rsquo;t a lack of AI. It&rsquo;s that work waits without anyone owning it. Fix that first.</Plain>
       </>
     ),
-    notes: [
-      "The chart is HR's own estimate. Hover a bar to see what each type of work includes.",
-      "Executive support isn't a separate problem. It comes almost for free from the shared data (appendix A4).",
-      "Call intelligence and risk signals need member data, so they belong in Phase 2.",
-    ],
   },
 
   /* 4 ------------------------------------------------------------ pilot */
   {
     id: "pilot",
-    section: "Q2 · Pilot",
+    section: "Pilot",
     title: "Pilot: HR follow-up on a shared work queue",
     content: (
       <>
-        <Head eyebrow="Initial pilot" q="Q2" title="Pilot: HR follow-up on a shared work queue"
+        <Head eyebrow="Initial pilot" title="Pilot: HR follow-up on a shared work queue"
           lede="The first workflow on the reusable engine. No member data, tools that likely connect today, and hours we can count before and after." />
         <div className="row g-3">
           <div className="col-12 col-lg-8">
@@ -278,11 +264,6 @@ const core: SlideDef[] = [
         <Plain>Start with HR because it has real pain, no patient data, and results we can count within weeks.</Plain>
       </>
     ),
-    notes: [
-      "Why HR first, not referrals: referrals carry member data, so a referral pilot would hit the PHI approval wall.",
-      "The −30% is a hypothesis to test against a two-week time-study baseline, not a promise.",
-      "AI is a small part of the pilot. The value comes from the work items and timers.",
-    ],
   },
 
   /* 5 ------------------------------------------------------------ tech stack pipeline */
@@ -313,21 +294,16 @@ const core: SlideDef[] = [
         </div>
       </>
     ),
-    notes: [
-      "Why Microsoft: one identity (Entra ID), one security model, low-code tools the team can maintain, and Microsoft signs a HIPAA BAA for many of these services. Confirm scope service by service.",
-      "If the organization stays on Slack, Power Automate can still post reminders there. Teams is the better home for the Copilot Studio agent.",
-      "The architecture stays portable: the same layers would work with other tools if licensing rules Microsoft out.",
-    ],
   },
 
   /* 6 ------------------------------------------------------------ architecture */
   {
     id: "architecture",
-    section: "Q3 · Architecture",
+    section: "Architecture",
     title: "Solution architecture",
     content: (
       <>
-        <Head eyebrow="Solution architecture" q="Q3" title="One connection layer, one shared record, AI behind a gate" />
+        <Head eyebrow="Solution architecture" title="One connection layer, one shared record, AI behind a gate" />
         <ArchitectureDiagram />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
           {[
@@ -342,20 +318,16 @@ const core: SlideDef[] = [
         <Plain>Information flows one way: from today&rsquo;s tools, into one shared record, and out to people in Teams and Power BI. AI never reaches into the source systems directly.</Plain>
       </>
     ),
-    notes: [
-      "Walk left to right: where data starts → connect → track → think → where people see it.",
-      "Dashed boxes are integrations we haven't confirmed yet: RingCentral API access and the healthcare-specific systems.",
-    ],
   },
 
   /* 7 ------------------------------------------------------------ AI vs automation */
   {
     id: "ai-vs-automation",
-    section: "Q4 · AI vs automation",
+    section: "AI vs automation",
     title: "Which tool for which job",
     content: (
       <>
-        <Head eyebrow="AI vs automation" q="Q4" title="Which tool for which job"
+        <Head eyebrow="AI vs automation" title="Which tool for which job"
           lede="Default to the simplest dependable option. AI is used only where the input or output is everyday language." />
         <ToolSplit />
         <div className="table-wrap">
@@ -392,10 +364,6 @@ const core: SlideDef[] = [
         <Plain>Most of the work is plain automation that always does the same thing. AI only helps with writing, and a person checks it.</Plain>
       </>
     ),
-    notes: [
-      "This answers 'do you know when not to use AI'. Three of ten components use generative AI, and each has a human checkpoint.",
-      "Agentic AI is deferred until there are months of audit history and stable workflows.",
-    ],
   },
 
   /* ------------------------------------------------------------ execution blueprint */
@@ -411,21 +379,16 @@ const core: SlideDef[] = [
         <Plain>Six of twelve use cases are plain workflows, and only one is agent-only. Agents only draft, summarize or answer. They never make a decision or act without a flow and a person behind them.</Plain>
       </>
     ),
-    notes: [
-      "Agents in Phase 1: HR Assistant (reminders, ER drafts), Policy Assistant, Chief-of-staff brief, Regulatory watch. All are Copilot Studio agents in Teams.",
-      "Agent actions (snooze, reassign, create task) always call a Power Automate flow, so every action is logged and checked against the user's role.",
-      "Filter by Phase 2 to show what waits for approval.",
-    ],
   },
 
   /* 8 ------------------------------------------------------------ orchestration */
   {
     id: "orchestration",
-    section: "Q5 · Orchestration",
+    section: "Orchestration",
     title: "One engine for “what is waiting?”",
     content: (
       <>
-        <Head eyebrow="Follow-up & work orchestration" q="Q5" title="One reusable engine, not one tracker per department"
+        <Head eyebrow="Follow-up & work orchestration" title="One reusable engine, not one tracker per department"
           lede="Every workflow has the same shape: something is missing, someone owns the next step, a clock is running. Build that once, then set it up per workflow." />
         <LifecycleDiagram />
         <div className="row g-3">
@@ -451,20 +414,16 @@ const core: SlideDef[] = [
         <Plain>Build one &ldquo;what&rsquo;s waiting, and on whom&rdquo; engine once, and reuse it for HR, referrals and everything else.</Plain>
       </>
     ),
-    notes: [
-      "This is the core of the proposal. HR is the first template and referrals are the second.",
-      "Pausing the clock requires a logged reason, so 'waiting on vendor' can't become a hiding place.",
-    ],
   },
 
   /* 9 ------------------------------------------------------------ security */
   {
     id: "security",
-    section: "Q6 · Security",
+    section: "Security",
     title: "Security, privacy & governance",
     content: (
       <>
-        <Head eyebrow="Security, privacy & governance" q="Q6" title="Two zones, one gate, closed by default" />
+        <Head eyebrow="Security, privacy & governance" title="Two zones, one gate, closed by default" />
         <PhaseBoundaryDiagram />
         <div className="row g-2" style={{ fontSize: ".86em" }}>
           {[
@@ -483,10 +442,6 @@ const core: SlideDef[] = [
         <Plain>Patient information lives in a separate, locked area. AI is switched off for it until the governing bodies say yes in writing.</Plain>
       </>
     ),
-    notes: [
-      "The separation is architectural: a separate environment with its own data and its own DLP policy, and no route from it to the AI services in Phase 1.",
-      "Confirm with Microsoft which exact services (Copilot Studio, Azure OpenAI, Dataverse) are in scope of the organization's BAA before Phase 2.",
-    ],
   },
 
   /* ------------------------------------------------------------ roles & permissions */
@@ -538,20 +493,16 @@ const core: SlideDef[] = [
         <Plain>Everyone sees only what their job needs. The AI follows the same rules as the person asking.</Plain>
       </>
     ),
-    notes: [
-      "Implementation: Entra ID security groups → Dataverse business units and security roles → SharePoint groups → Power BI row-level security. One group membership drives all four.",
-      "ER records live in a separate restricted Dataverse table. Even HR staff outside ER can't read them.",
-    ],
   },
 
   /* 10 ------------------------------------------------------------ knowledge assistant */
   {
     id: "knowledge",
-    section: "Q7 · Knowledge assistant",
+    section: "Knowledge assistant",
     title: "Policy & SOP knowledge assistant",
     content: (
       <>
-        <Head eyebrow="Policy & SOP knowledge assistant" q="Q7" title="Answers only from approved, current policy, with citations" />
+        <Head eyebrow="Policy & SOP knowledge assistant" title="Answers only from approved, current policy, with citations" />
         <RagDiagram />
         <div className="row g-3" style={{ fontSize: ".9em" }}>
           <div className="col-12 col-lg-4">
@@ -576,20 +527,16 @@ const core: SlideDef[] = [
         <Plain>Staff ask a question in Teams and get an answer quoted from the real policy, with a link to it. If the policy doesn&rsquo;t say, the assistant says so and doesn&rsquo;t guess.</Plain>
       </>
     ),
-    notes: [
-      "Built as a Copilot Studio agent in Teams, with the SharePoint library as its knowledge source and generative answers restricted to that source.",
-      "Permissions follow SharePoint: a supervisor-only SOP is never used to answer a frontline question.",
-    ],
   },
 
   /* 11 ------------------------------------------------------------ referral + accessibility */
   {
     id: "referral",
-    section: "Q8–Q9 · Referral & access",
+    section: "Referral & access",
     title: "Referral workflow & accessibility",
     content: (
       <>
-        <Head eyebrow="Future-state referral workflow · accessibility" q="Q8 · Q9" title="Referrals on the same engine, reachable without a smartphone" />
+        <Head eyebrow="Future-state referral workflow · accessibility" title="Referrals on the same engine, reachable without a smartphone" />
         <ReferralDiagram />
         <div className="row g-3" style={{ fontSize: ".9em" }}>
           <div className="col-12 col-lg-7">
@@ -619,20 +566,16 @@ const core: SlideDef[] = [
         <Plain>Referrals get the same &ldquo;owner and due date&rdquo; treatment now. AI helps later, after approval. Members without phones are always reached by a person.</Plain>
       </>
     ),
-    notes: [
-      "Most of the referral workflow can be built now, because rules and workflow aren't AI. Confirm that Power Platform itself is acceptable for PHI under the BAA.",
-      "The 'prospect' queue replaces the side spreadsheets: not-yet-eligible referrals get a re-check date and an owner.",
-    ],
   },
 
   /* 12 ------------------------------------------------------------ roadmap */
   {
     id: "roadmap",
-    section: "Q10 · Roadmap",
+    section: "Roadmap",
     title: "Phased roadmap",
     content: (
       <>
-        <Head eyebrow="Implementation approach" q="Q10" title="Five stages, each with a test before moving on" />
+        <Head eyebrow="Implementation approach" title="Five stages, each with a test before moving on" />
         <RoadmapGantt />
         <div className="gate-list">
           {[
@@ -660,11 +603,6 @@ const core: SlideDef[] = [
         <ShareCard compact />
       </>
     ),
-    notes: [
-      "Durations are estimates to re-plan after discovery. Hover the bars for each stage's test.",
-      "The approval track starts in week one so it isn't on the critical path later.",
-      "Discovery questions are in appendix A1.",
-    ],
   },
 ];
 

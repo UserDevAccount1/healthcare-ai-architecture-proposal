@@ -11,15 +11,14 @@ A web slide deck presenting an AI solution architecture for a healthcare service
 | `→` `Space` `PageDown` | Next slide |
 | `←` `PageUp` | Previous slide |
 | `O` / `Esc` | Overview of all slides |
-| `N` | Speaker notes |
 | `P` | Print view (all slides stacked, use the browser's Save as PDF) |
 
 Swipe left/right on touch screens. Each slide has a deep link: `#4` opens slide 4.
 
 ## Structure
 
-- 10 core slides covering assessment questions Q1–Q10, plus appendix A1–A5 for Q&A
-- `slides/index.tsx` holds the core slides and `slides/appendix.tsx` holds the appendix
+- Main slides plus a supporting appendix
+- `slides/` holds the slide content; `slides/appendix.tsx` holds the appendix
 - `components/diagrams/` holds the inline SVG diagrams (architecture, lifecycle, PHI boundary, RAG, referral)
 - `components/Deck.tsx` is the slide engine
 

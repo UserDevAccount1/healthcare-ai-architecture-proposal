@@ -74,7 +74,7 @@ export const extra: Record<string, SlideDef> = {
     content: (
       <>
         <Head eyebrow="Reading between the lines" title="What we think you're really trying to solve"
-          lede="The brief lists tools and departments. Underneath, we hear five goals. The proposal is built to meet these, not just to add AI." />
+          lede="On the surface this is about tools and departments. Underneath, we see five goals, and the plan is built around them, not around AI." />
         <div className="row g-3">
           {[
             ["Nothing falls through the cracks", "Every follow-up has an owner and a due date, and leaders can see what's stuck before it becomes a problem.", "Work orchestration"],
@@ -99,10 +99,6 @@ export const extra: Record<string, SlideDef> = {
         <Plain>You don&rsquo;t need more technology. You need work that doesn&rsquo;t get lost, less admin, and a safe way to start using AI.</Plain>
       </>
     ),
-    notes: [
-      "This is the pitch opener. Show you understood the business before the technology.",
-      "Each goal maps to a part of the proposal. Point to the tag on each card.",
-    ],
   },
 
   /* ------------------------------------------------------------ quick wins */
@@ -137,10 +133,6 @@ export const extra: Record<string, SlideDef> = {
         <Plain>We can show working results within a month, using what you already pay for, without touching patient data with AI.</Plain>
       </>
     ),
-    notes: [
-      "The meeting-and-call report is the best demo: it's visible, saves time immediately, and is easy to understand. See the next slide.",
-      "Every 'Ready?' cell is an assumption to confirm, not a promise.",
-    ],
   },
 
   /* ------------------------------------------------------------ call demo */
@@ -156,11 +148,6 @@ export const extra: Record<string, SlideDef> = {
         <Plain>After a staff call, the system writes the meeting notes into your standard report template, files it in the right folder, and creates the follow-up tasks. A person checks it before it&rsquo;s final.</Plain>
       </>
     ),
-    notes: [
-      "Fictional sample data. In a real prototype, the source is an internal call recorded in RingCentral or a Teams meeting.",
-      "The AI only extracts fields the template defines. It doesn't write free-form conclusions.",
-      "Member calls are the Phase 2 version of this, and the flow is identical, which is the point: approval switches on an already-tested design.",
-    ],
   },
 
   /* ------------------------------------------------------------ constellation */
@@ -175,24 +162,20 @@ export const extra: Record<string, SlideDef> = {
         <Constellation />
       </>
     ),
-    notes: [
-      "Start on the company brain at the center, then click outward: Dataverse, SharePoint, Copilot Studio, Teams.",
-      "Dim, dashed labels are Phase 2 (OCR of member documents, healthcare systems, PHI gate).",
-    ],
   },
 
   /* ------------------------------------------------------------ mapping */
   mapping: {
     id: "mapping",
     section: "Architecture mapping",
-    title: "How each requirement maps to the architecture",
+    title: "Each business need, mapped to the architecture",
     content: (
       <>
-        <Head eyebrow="High-level architecture mapping" title="Every requirement in the brief, and where it lives"
-          lede="A checklist against the assessment: what the requirement is, which layer handles it, the tool, and when." />
+        <Head eyebrow="High-level architecture mapping" title="Each business need, mapped to the architecture"
+          lede="What the need is, which layer handles it, the tool that does it, and when it arrives." />
         <div className="table-wrap">
           <table className="table map-table align-middle mb-0">
-            <thead><tr><th>Requirement from the brief</th><th>Layer</th><th>Handled by</th><th>Phase</th></tr></thead>
+            <thead><tr><th>Business need</th><th>Layer</th><th>Handled by</th><th>Phase</th></tr></thead>
             <tbody>
               {[
                 ["Know what is waiting, on whom, for how long", "Track", "Dataverse work items + Power Automate timers", "1"],
@@ -220,7 +203,6 @@ export const extra: Record<string, SlideDef> = {
         </div>
       </>
     ),
-    notes: ["Use this as the 'did we cover everything' slide. Each row points back to a slide in the deck."],
   },
 
   /* ------------------------------------------------------------ RAG + OCR */
@@ -246,11 +228,6 @@ export const extra: Record<string, SlideDef> = {
         <Plain>Every paper, scan and policy becomes searchable. Staff ask in plain English and get the exact document back, with a link. Patient documents stay locked until approval.</Plain>
       </>
     ),
-    notes: [
-      "OCR choice: start with Azure AI Document Intelligence. It's managed, part of the Microsoft stack, and can be covered by the BAA.",
-      "Unlimited-OCR (Baidu, MIT licence) is strong on very long multi-page documents, but it is self-hosted and was tested on an 80 GB data-centre GPU. Consider it only if volumes or data-location rules justify running our own server.",
-      "Separate indexes per zone mean a Phase 1 question can never retrieve a member document.",
-    ],
   },
 
   /* ------------------------------------------------------------ company brain */
@@ -271,9 +248,5 @@ export const extra: Record<string, SlideDef> = {
         <Plain>The brain remembers what was decided, who owns what, and where things are, so the CEO and staff don&rsquo;t have to ask around.</Plain>
       </>
     ),
-    notes: [
-      "This is the long-term asset. Every workflow and agent adds to it, and every agent reads from it.",
-      "If GBrain is evaluated, run it self-hosted inside the organization's cloud, and check where its embedding and rerank providers send text.",
-    ],
   },
 };

@@ -38,7 +38,7 @@ const alm: PipelineStep[] = [
 function AHead({ code, title }: { code: string; title: string }) {
   return (
     <header className="d-flex flex-column gap-2">
-      <div className="eyebrow"><span>Appendix {code}</span><span className="q">for Q&amp;A</span></div>
+      <div className="eyebrow"><span>Appendix {code}</span><span className="q">Supporting detail</span></div>
       <h2>{title}</h2>
     </header>
   );
@@ -72,7 +72,6 @@ export const appendix: SlideDef[] = [
         </div>
       </>
     ),
-    notes: ["Use this slide if asked 'what would you need to know first?'. Each answer changes a specific box in the architecture diagram."],
   },
   {
     id: "a2-guardrails",
@@ -97,7 +96,6 @@ export const appendix: SlideDef[] = [
         </div>
       </>
     ),
-    notes: ["These guardrails are enforced in the flows and settings, not only in the prompt wording."],
   },
   {
     id: "a4-ceo",
@@ -134,7 +132,6 @@ export const appendix: SlideDef[] = [
         </div>
       </>
     ),
-    notes: ["This is why executive support isn't a separate project. Once the engine exists, the brief is mostly a query plus a template."],
   },
   {
     id: "a5-calls",
@@ -157,7 +154,6 @@ export const appendix: SlideDef[] = [
         </div>
       </>
     ),
-    notes: ["Raw transcripts are never stored longer than needed. Approved summaries go into the record, and the rest follows the retention policy."],
   },
   {
     id: "a6-alm",
@@ -169,7 +165,6 @@ export const appendix: SlideDef[] = [
         <Pipeline steps={withOutputs(alm, almOut)} label="Release pipeline" />
       </>
     ),
-    notes: ["This is the application lifecycle management answer: three environments, managed solutions, pipeline approvals, and rollback."],
   },
   {
     id: "a7-skills",
@@ -201,7 +196,6 @@ export const appendix: SlideDef[] = [
         <p className="text-body-secondary mb-0" style={{ fontSize: ".85em" }}>In a small organization, several of these sit with one or two people. The pilot needs the architect plus one Power Platform developer; the process owners matter as much as the builders.</p>
       </>
     ),
-    notes: ["Citizen developers can build simple flows inside guardrails (DLP, DEV-only access), but the shared engine and agents stay with the core team."],
   },
   {
     id: "a8-glossary",
@@ -232,6 +226,5 @@ export const appendix: SlideDef[] = [
         </div>
       </>
     ),
-    notes: ["Keep this open for business stakeholders during Q&A."],
   },
 ];
