@@ -1,4 +1,38 @@
 import type { SlideDef } from "./types";
+import Pipeline, { type PipelineStep } from "@/components/Pipeline";
+
+const alm: PipelineStep[] = [
+  {
+    key: "dev", title: "Build in DEV", hint: "Makers work here only",
+    plain: "Changes are built in a practice copy of the system, never in the one staff use.",
+    tech: "Each maker builds in the DEV environment inside a solution. Source is exported to a git repo for history and review.",
+    tools: ["DEV environment", "Solutions", "Git (Azure DevOps or GitHub)"],
+  },
+  {
+    key: "review", title: "Review", hint: "A second person checks",
+    plain: "Someone else reviews every change before it moves on.",
+    tech: "Solution checker runs automatically; a peer reviews flows, prompts and security roles.",
+    tools: ["Solution checker", "Pull request"],
+  },
+  {
+    key: "qa", title: "Test in QA", hint: "Real steps, test data",
+    plain: "The change is tried in a test copy with sample data. Users from HR check it works the way they expect.",
+    tech: "Deployed as a managed solution to QA through Power Platform Pipelines; test scripts plus prompt evaluation for agent changes.",
+    tools: ["QA environment", "Power Platform Pipelines", "Copilot Studio test pane"], tone: "amber",
+  },
+  {
+    key: "approve", title: "Approve", hint: "Business owner signs off",
+    plain: "The business owner says yes before anything reaches staff.",
+    tech: "Approval stage in the pipeline, with the approver and timestamp recorded.",
+    tools: ["Pipeline approvals"], tone: "amber",
+  },
+  {
+    key: "prod", title: "Release to PROD", hint: "Managed, locked, monitored",
+    plain: "The change goes live. Nobody can edit the live version directly, and it can be rolled back.",
+    tech: "A managed solution in a Managed Environment, with DLP policies and monitoring. The previous version is kept for rollback.",
+    tools: ["PROD environment", "Managed Environments", "Purview DLP"],
+  },
+];
 
 function AHead({ code, title }: { code: string; title: string }) {
   return (
@@ -22,10 +56,11 @@ export const appendix: SlideDef[] = [
           {[
             ["Systems & APIs", ["Rippling: which API scopes and webhooks are on our plan?", "Jotform: HIPAA plan? webhook payloads? where are submissions stored?", "RingCentral: recording/transcript API access and retention settings?", "Healthcare systems: vendor names, export formats, any API?", "QuickBooks: is it needed at all in Phase 1?"]],
             ["Data & source of truth", ["Where does a referral officially live today?", "Which spreadsheets are operational, and who owns each?", "Monthly volumes: referrals, candidates, onboarding cases.", "How are people identified across systems (shared IDs)?"]],
+            ["Microsoft licensing", ["Which Microsoft 365 plan, and do staff use Teams or Slack day to day?", "Power Platform: premium connectors and Dataverse capacity?", "Copilot Studio and Azure subscription in place?", "Which Microsoft services are in scope of the existing HIPAA BAA?"]],
             ["Identity & security", ["Identity provider: Google Workspace or Microsoft Entra? Is MFA enforced?", "Do all field staff have accounts and devices?", "Existing BAAs, and with which vendors?", "Security policies, incident response, log retention rules."]],
             ["Governance & people", ["What will the governing bodies need to review: architecture, vendor list, a risk assessment?", "Who owns each policy, and how are policies approved today?", "Who has authority to change SLAs and escalation paths?", "Where is the organization comfortable with AI-drafted text?"]],
           ].map(([t, items]) => (
-            <div className="col-12 col-md-6" key={t as string}>
+            <div className="col-12 col-md-6 col-xl-4" key={t as string}>
               <div className="panel h-100">
                 <h3>{t as string}</h3>
                 <ul>{(items as string[]).map((i) => <li key={i}>{i}</li>)}</ul>
@@ -206,5 +241,80 @@ current-version passages... </sources>
       </>
     ),
     notes: ["Raw transcripts are never stored longer than needed. Approved summaries go into the record, and the rest follows the retention policy."],
+  },
+  {
+    id: "a6-alm",
+    section: "A6 · ALM",
+    title: "How changes ship safely (DEV → QA → PROD)",
+    content: (
+      <>
+        <AHead code="A6" title="How changes ship safely: DEV → QA → PROD" />
+        <Pipeline steps={alm} label="Release pipeline" />
+      </>
+    ),
+    notes: ["This is the application lifecycle management answer: three environments, managed solutions, pipeline approvals, and rollback."],
+  },
+  {
+    id: "a7-skills",
+    section: "A7 · Team skills",
+    title: "Skills needed to build and run it",
+    content: (
+      <>
+        <AHead code="A7" title="Skills needed to build and run it" />
+        <div className="row g-3" style={{ fontSize: ".88em" }}>
+          {[
+            ["AI solutions architect", "Lead", ["Overall design and use-case triage (agent vs workflow)", "Security and governance design", "Stakeholder workshops, translating needs into plans"]],
+            ["Copilot Studio developer", "Build", ["Agent topics, actions and knowledge sources", "Prompt design and evaluation sets", "Publishing to Teams, analytics"]],
+            ["Power Automate developer", "Build", ["Cloud flows, custom connectors, error handling", "Scheduled timers and escalation", "Power Automate Desktop where no API exists"]],
+            ["Dataverse / Power Apps developer", "Build", ["Data model: work items, templates, events", "Security roles and business units", "Model-driven work-queue app"]],
+            ["Power BI developer", "Build", ["Aging and SLA reports", "Row-level security", "Fabric dataflows when data grows"]],
+            ["Power Platform admin", "Run", ["Environments, DLP, Managed Environments", "Pipelines and release approvals", "Licence and capacity monitoring"]],
+            ["Process owners (HR, intake, compliance)", "Own", ["Define templates, due dates, escalation paths", "Approve AI-drafted content", "Own policy documents"]],
+            ["Change & training lead", "Adopt", ["Short how-to guides and Teams office hours", "Champions in each department", "Citizen-developer guardrails"]],
+          ].map(([role, tag, items]) => (
+            <div className="col-12 col-md-6 col-xl-3" key={role as string}>
+              <div className="panel h-100">
+                <span className="label">{tag as string}</span>
+                <h3 className="mt-1">{role as string}</h3>
+                <ul>{(items as string[]).map((i) => <li key={i}>{i}</li>)}</ul>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-body-secondary mb-0" style={{ fontSize: ".85em" }}>In a small organization, several of these sit with one or two people. The pilot needs the architect plus one Power Platform developer; the process owners matter as much as the builders.</p>
+      </>
+    ),
+    notes: ["Citizen developers can build simple flows inside guardrails (DLP, DEV-only access), but the shared engine and agents stay with the core team."],
+  },
+  {
+    id: "a8-glossary",
+    section: "A8 · Glossary",
+    title: "Glossary in plain words",
+    content: (
+      <>
+        <AHead code="A8" title="Glossary in plain words" />
+        <div className="row g-2" style={{ fontSize: ".88em" }}>
+          {[
+            ["PHI", "Protected Health Information: anything that identifies a member together with their health or care."],
+            ["HIPAA / BAA", "US health privacy law. A Business Associate Agreement is the contract a vendor signs to handle PHI under HIPAA."],
+            ["SLA / due date", "The agreed time something should be done in, such as replying to a referral within 24 hours."],
+            ["Workflow", "A fixed set of steps that runs the same way every time. Here: Power Automate."],
+            ["AI agent", "An assistant that understands and writes everyday language. Here: Copilot Studio in Teams."],
+            ["RAG", "The AI looks up approved documents first, then answers only from what it found, with a citation."],
+            ["Dataverse", "Microsoft's secure database behind Power Apps, where all follow-ups are stored."],
+            ["Connector", "A ready-made link that lets two systems pass information without retyping."],
+            ["RPA", "Software that clicks through a screen like a person would. A last resort for systems with no API."],
+            ["DLP", "Data-loss prevention: rules that stop sensitive data going where it shouldn't."],
+            ["Entra ID", "Microsoft's sign-in and identity service. One login, with MFA."],
+            ["ALM · DEV / QA / PROD", "How changes are built, tested and released: in a practice copy, a test copy, then the live system."],
+          ].map(([k, v]) => (
+            <div className="col-12 col-md-6 col-xl-4" key={k}>
+              <div className="panel h-100"><span className="label">{k}</span><p className="mt-1">{v}</p></div>
+            </div>
+          ))}
+        </div>
+      </>
+    ),
+    notes: ["Keep this open for business stakeholders during Q&A."],
   },
 ];

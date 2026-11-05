@@ -46,6 +46,8 @@ export default function Deck({ slides }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.closest("input, textarea, select, summary") || (el.closest("button") && (e.key === " " || e.key === "Enter")))) return;
       const k = e.key;
       if (["ArrowRight", "PageDown", " "].includes(k)) { e.preventDefault(); go(idx + 1); }
       else if (["ArrowLeft", "PageUp"].includes(k)) { e.preventDefault(); go(idx - 1); }

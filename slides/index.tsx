@@ -3,6 +3,9 @@ import { appendix } from "./appendix";
 import {
   ArchitectureDiagram, LifecycleDiagram, PhaseBoundaryDiagram, RagDiagram, ReferralDiagram,
 } from "@/components/diagrams";
+import Pipeline, { type PipelineStep } from "@/components/Pipeline";
+import { HoursChart, RoadmapGantt, ToolSplit } from "@/components/charts/Charts";
+import Blueprint from "@/components/Blueprint";
 
 function Head({ eyebrow, q, title, lede }: { eyebrow: string; q?: string; title: string; lede?: string }) {
   return (
@@ -13,6 +16,98 @@ function Head({ eyebrow, q, title, lede }: { eyebrow: string; q?: string; title:
     </header>
   );
 }
+
+/** One-sentence summary for non-technical readers. */
+function Plain({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="plain"><span className="label">In plain words</span><p>{children}</p></div>
+  );
+}
+
+/* ------------------------------------------------------------------ pipeline data */
+const followUpJourney: PipelineStep[] = [
+  {
+    key: "happens", title: "Something happens", hint: "A form arrives or a candidate moves",
+    plain: "A hiring manager interviews a candidate, or a new referral form comes in. Today someone has to remember that a follow-up is now needed.",
+    tech: "A Jotform submission or a Rippling stage change triggers a Power Automate flow. No one has to type anything.",
+    tools: ["Jotform", "Rippling", "Power Automate"],
+  },
+  {
+    key: "logged", title: "It's written down", hint: "One shared list, not a spreadsheet",
+    plain: "The follow-up goes on one shared to-do list that everyone can see, instead of in someone's head or a private spreadsheet.",
+    tech: "The flow creates a work item in a Dataverse table, from a template that says what this kind of item needs.",
+    tools: ["Dataverse"],
+  },
+  {
+    key: "owner", title: "Someone owns it", hint: "A named person and a due date",
+    plain: "Each item gets one named person who owns the next step, and a date it should be done by.",
+    tech: "Template rules assign the owner (for example, the interviewer) and set the due date from the agreed turnaround time.",
+    tools: ["Dataverse business rules"],
+  },
+  {
+    key: "remind", title: "A friendly reminder", hint: "In Teams or email, before it's late",
+    plain: "As the date gets close, the owner gets a short, polite reminder where they already work.",
+    tech: "A scheduled flow checks due dates. Copilot Studio drafts the reminder text; HR approves anything sent to candidates.",
+    tools: ["Power Automate", "Teams", "Outlook", "Copilot Studio"], tone: "amber",
+  },
+  {
+    key: "escalate", title: "Escalate if stuck", hint: "Manager is told, with the history",
+    plain: "If it is still not done, the owner's manager is told automatically, with a short summary of what has happened so far.",
+    tech: "Escalation tiers are fixed rules, not AI. AI only writes the short summary from the item's history.",
+    tools: ["Power Automate", "Copilot Studio"], tone: "crit",
+  },
+  {
+    key: "done", title: "Done and recorded", hint: "Closed with a full history",
+    plain: "When the owner finishes, the item closes. Every step is kept, so anyone can see what happened and when.",
+    tech: "Dataverse auditing keeps the full history of each item.",
+    tools: ["Dataverse auditing"],
+  },
+  {
+    key: "see", title: "Leaders see trends", hint: "No one builds the report by hand",
+    plain: "Leaders get a weekly picture of what is stuck and where, built from the same list. Nobody has to maintain a separate dashboard.",
+    tech: "A Power BI report reads the work-item tables directly, and a Copilot summary writes the weekly brief.",
+    tools: ["Power BI", "Microsoft Fabric (later)"],
+  },
+];
+
+const stackFlow: PipelineStep[] = [
+  {
+    key: "start", title: "Where data starts", hint: "Tools the team uses today",
+    plain: "Nothing gets replaced. Rippling, Jotform, QuickBooks and RingCentral stay where they are.",
+    tech: "Read-only connections first. Which of these have usable APIs is confirmed in discovery.",
+    tools: ["Rippling", "Jotform", "RingCentral", "QuickBooks", "Slack", "Email"],
+  },
+  {
+    key: "connect", title: "Connect", hint: "Power Automate",
+    plain: "A connector moves information between the tools automatically, so nobody re-types it.",
+    tech: "Standard connectors where they exist; custom connectors for Rippling and RingCentral APIs; Power Automate Desktop (RPA) only where there is no API.",
+    tools: ["Power Automate", "Custom connectors", "Power Automate Desktop"],
+  },
+  {
+    key: "track", title: "Track", hint: "Dataverse",
+    plain: "One secure place holds every open follow-up: who owns it, what it's waiting on, when it's due.",
+    tech: "Dataverse tables for work items, templates and events, with security roles and auditing switched on.",
+    tools: ["Dataverse", "Power Apps (model-driven)"],
+  },
+  {
+    key: "think", title: "Think (AI)", hint: "Copilot Studio",
+    plain: "AI helps with writing: drafting reminders, summarizing a history, answering policy questions from approved documents.",
+    tech: "Copilot Studio agents using Azure OpenAI, with knowledge from a SharePoint policy library (plus Azure AI Search if needed). There is a PHI gate in front of every call.",
+    tools: ["Copilot Studio", "Azure OpenAI", "SharePoint", "Azure AI Search"], tone: "amber",
+  },
+  {
+    key: "show", title: "Show", hint: "Teams · Power Apps · Power BI",
+    plain: "People see their to-dos where they already work, and leaders get a report without asking anyone to build it.",
+    tech: "The agent is published to Teams, the work queue is a Power Apps app, alerts go through Outlook, and reports are built in Power BI.",
+    tools: ["Teams", "Power Apps", "Outlook", "Power BI"],
+  },
+  {
+    key: "govern", title: "Keep it safe", hint: "Entra ID · Purview · ALM",
+    plain: "Only the right people see the right things, every change is tested before it goes live, and AI can't see member data until it's approved.",
+    tech: "Entra ID single sign-on with MFA, Purview data-loss-prevention policies, managed environments, and Power Platform Pipelines moving changes from DEV to QA to PROD.",
+    tools: ["Entra ID", "Purview", "Managed Environments", "Power Platform Pipelines"], tone: "muted",
+  },
+];
 
 const core: SlideDef[] = [
   /* 1 ------------------------------------------------------------ title */
@@ -25,8 +120,8 @@ const core: SlideDef[] = [
         <div className="eyebrow"><span>AI Solution Architecture Proposal</span><span className="q">Healthcare services organization</span></div>
         <h1>Make waiting work visible first. Add AI where it earns its place.</h1>
         <p className="thesis">
-          <b>Orchestrate the follow-ups</b> that stall today, <b>use AI for language work</b> (drafting, summarizing, grounded answers),
-          and <b>keep member-level data out of AI</b> until the governing bodies approve it.
+          <b>Track every follow-up</b> so nothing stalls, <b>use AI for writing work</b> (drafting, summarizing, answering from policy),
+          and <b>keep member data away from AI</b> until the governing bodies approve it.
         </p>
         <div className="d-flex flex-wrap gap-2">
           <span className="chip now">Phase 1 · no PHI · starts now</span>
@@ -44,16 +139,36 @@ const core: SlideDef[] = [
             </div>
           ))}
         </div>
+        <p className="text-body-secondary mb-0" style={{ fontSize: ".85em" }}>Built on Microsoft 365 and Power Platform: Copilot Studio, Power Automate, Dataverse, Power Apps, Power BI, Teams, SharePoint.</p>
       </div>
     ),
     notes: [
-      "Open with the thesis: the problems are mostly about work that waits without an owner, not about a missing AI product.",
+      "Open with the thesis: most of the problems are work that waits without an owner. Buying an AI product won't fix that.",
       "The 18–29 hours is the sum of the HR estimates in the brief: 10–15 recruiting, 5–8 employee relations, 3–6 onboarding.",
-      "Set expectations: Phase 1 avoids PHI entirely, which is why it can start now.",
+      "Phase 1 avoids PHI entirely, which is why it can start now.",
     ],
   },
 
-  /* 2 ------------------------------------------------------------ problem assessment */
+  /* 2 ------------------------------------------------------------ plan in one picture */
+  {
+    id: "one-picture",
+    section: "Overview",
+    title: "The plan in one picture",
+    content: (
+      <>
+        <Head eyebrow="The plan in one picture" title="How a follow-up will move, from start to finish"
+          lede="Click any step, or press Play, to follow one item through. Each step shows what changes for staff, and the tool that does it." />
+        <Pipeline steps={followUpJourney} label="Follow-up journey" />
+        <Plain>Every follow-up follows the same seven steps. Only two of them (writing the reminder and the summary) use AI. The rest are simple rules that always behave the same way.</Plain>
+      </>
+    ),
+    notes: [
+      "Use this slide with non-technical stakeholders before any architecture. Press Play and narrate the steps.",
+      "The same journey applies to interview feedback, missing consents, referral documents and ER action items. Only the template changes.",
+    ],
+  },
+
+  /* 3 ------------------------------------------------------------ problems */
   {
     id: "problems",
     section: "Q1 · Problems",
@@ -61,31 +176,36 @@ const core: SlideDef[] = [
     content: (
       <>
         <Head eyebrow="Problem assessment" q="Q1" title="The four problems worth solving first"
-          lede="Picked because they recur across departments, cost measurable hours or response time, and share one root cause: no shared record of who owns the next step." />
+          lede="They recur across departments, cost hours or response time we can measure, and share one root cause: nobody can see who owns the next step." />
         <div className="row g-3">
-          {[
-            ["1 · Stalled follow-ups", "Interview feedback, candidate replies, missing consents and referral documents are tracked in heads and spreadsheets. Nobody can see what is waiting, on whom, or for how long.", "Cross-department"],
-            ["2 · Referral response & leakage", "The 24-hour target has no clock behind it. Not-yet-eligible prospects sit in side spreadsheets with no re-check date.", "Revenue + mission"],
-            ["3 · HR administrative load", "18–29 hours a week spent chasing people, moving candidates between stages and drafting ER documentation.", "Hours we can measure"],
-            ["4 · Scattered policy knowledge", "Staff ask colleagues questions the policies already answer. Answers vary by supervisor.", "Consistency + risk"],
-          ].map(([t, d, tag]) => (
-            <div className="col-12 col-md-6 col-xl-3" key={t}>
-              <div className="panel h-100 d-flex flex-column gap-2">
-                <span className="label">{tag}</span>
-                <h3>{t}</h3>
-                <p>{d}</p>
-              </div>
+          <div className="col-12 col-xl-6"><HoursChart /></div>
+          <div className="col-12 col-xl-6">
+            <div className="row g-2">
+              {[
+                ["1 · Stalled follow-ups", "Feedback, replies, consents and documents tracked in heads and spreadsheets.", "Cross-department"],
+                ["2 · Referral response", "No clock behind the 24-hour target; not-yet-eligible prospects get lost.", "Revenue + mission"],
+                ["3 · HR admin load", "18–29 hours a week chasing people and moving candidates.", "Hours we can measure"],
+                ["4 · Scattered policy", "Questions the policies already answer, answered differently by each supervisor.", "Consistency + risk"],
+              ].map(([t, d, tag]) => (
+                <div className="col-12 col-sm-6" key={t}>
+                  <div className="panel h-100 d-flex flex-column gap-1">
+                    <span className="label">{tag}</span>
+                    <h3 className="mb-0">{t}</h3>
+                    <p style={{ fontSize: ".9em" }}>{d}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
         <div className="panel is-signal">
           <h3>Where AI is the wrong tool</h3>
-          <div className="row g-2">
+          <div className="row g-2" style={{ fontSize: ".92em" }}>
             {[
-              ["Re-entering the same data in several forms", "One intake record plus integration"],
-              ["Deadlines, aging, escalation", "Deterministic rules and timers"],
-              ["Recurring report assembly", "Scheduled data pulls and templates"],
-              ["Status of a referral or candidate", "Workflow state, not a model's guess"],
+              ["Re-entering the same data in several forms", "One intake record plus connectors"],
+              ["Deadlines, aging, escalation", "Fixed rules and timers"],
+              ["Recurring report assembly", "Power BI over the shared data"],
+              ["Status of a referral or candidate", "A field in the record, not an AI guess"],
             ].map(([p, f]) => (
               <div className="col-12 col-md-6" key={p}>
                 <span className="fw-semibold">{p}</span> <span className="text-body-secondary">→ {f}</span>
@@ -93,16 +213,17 @@ const core: SlideDef[] = [
             ))}
           </div>
         </div>
+        <Plain>The biggest problem isn&rsquo;t a lack of AI. It&rsquo;s that work waits without anyone owning it. Fix that first.</Plain>
       </>
     ),
     notes: [
-      "Executive support (the chief-of-staff idea) is deliberately not a separate problem. It becomes a by-product of the orchestration data (see appendix A4).",
-      "Call intelligence and risk signals are valuable, but they need member-level data, so they belong in Phase 2.",
-      "Emphasize the amber box: most of the pain is solved without generative AI.",
+      "The chart is HR's own estimate. Hover a bar to see what each type of work includes.",
+      "Executive support isn't a separate problem. It comes almost for free from the shared data (appendix A4).",
+      "Call intelligence and risk signals need member data, so they belong in Phase 2.",
     ],
   },
 
-  /* 3 ------------------------------------------------------------ pilot */
+  /* 4 ------------------------------------------------------------ pilot */
   {
     id: "pilot",
     section: "Q2 · Pilot",
@@ -110,20 +231,20 @@ const core: SlideDef[] = [
     content: (
       <>
         <Head eyebrow="Initial pilot" q="Q2" title="Pilot: HR follow-up on a shared work queue"
-          lede="The first workflow on the reusable orchestration engine. No member data, APIs that are likely to exist (Rippling, Jotform, Slack), and hours we can count before and after." />
+          lede="The first workflow on the reusable engine. No member data, tools that likely connect today, and hours we can count before and after." />
         <div className="row g-3">
           <div className="col-12 col-lg-8">
             <div className="row g-2">
               {[
                 ["Problem", "Recruiting and onboarding stall while HR chases feedback, references, checks and acknowledgements."],
                 ["Users", "HR/recruiting staff, hiring managers, supervisors; HR lead as admin."],
-                ["Trigger", "Rippling stage change, Jotform submission, or a timer firing on an open item."],
-                ["Workflow", "Event → create work item with owner + due date → nudge in Slack/email → escalate on SLA → close on completion."],
+                ["Trigger", "Rippling stage change, Jotform submission, or a timer on an open item."],
+                ["Workflow", "Event → work item with owner + due date → reminder in Teams/email → escalate when late → close."],
                 ["Inputs", "Candidate stage, interviewer list, onboarding checklist, due dates. Staff data only."],
-                ["Outputs", "Owner-specific nudges, HR work queue, weekly aging report, drafted reminder text."],
-                ["Systems", "Rippling, Jotform, Slack, email, orchestration core, LLM gateway (drafting only)."],
-                ["Human review", "HR approves AI-drafted messages to candidates; managers own the decisions; HR can snooze or reassign."],
-                ["Exceptions", "No API data → CSV import; unknown owner → HR triage queue; failed send → retry + alert."],
+                ["Outputs", "Personal reminders, HR work queue (Power Apps), weekly Power BI aging report, drafted messages."],
+                ["Systems", "Rippling, Jotform, Teams, Outlook, Power Automate, Dataverse, Copilot Studio (drafting only)."],
+                ["Human review", "HR approves AI-drafted messages to candidates; managers make the decisions; HR can snooze or reassign."],
+                ["Exceptions", "No API → CSV import; unknown owner → HR triage queue; failed send → retry + alert."],
               ].map(([k, v]) => (
                 <div className="col-12 col-md-6 col-xl-4" key={k}>
                   <div className="panel h-100"><span className="label">{k}</span><p className="mt-1" style={{ fontSize: ".9em" }}>{v}</p></div>
@@ -134,58 +255,87 @@ const core: SlideDef[] = [
           <div className="col-12 col-lg-4 d-flex flex-column gap-2">
             <div className="panel is-pine">
               <span className="label">Expected benefit</span>
-              <p className="mt-1">Fewer manual chases, faster time-to-hire, nothing silently stuck. It also proves the engine we reuse for referrals.</p>
+              <p className="mt-1">Fewer manual chases, faster hiring, nothing silently stuck. It also proves the engine we reuse for referrals.</p>
             </div>
             <div className="panel">
               <span className="label">Success measures · baseline in discovery</span>
               <ul className="mt-1" style={{ fontSize: ".9em" }}>
                 <li>HR hours/week on recruiting admin (target: −30%, to be validated)</li>
                 <li>Median days to interviewer feedback</li>
-                <li>Items past SLA, by owner</li>
+                <li>Items past due, by owner</li>
                 <li>Time from offer to day-one ready</li>
                 <li>Share of AI drafts sent without edits</li>
               </ul>
             </div>
           </div>
         </div>
+        <Plain>Start with HR because it has real pain, no patient data, and results we can count within weeks.</Plain>
       </>
     ),
     notes: [
-      "Why HR first, not referrals: referrals carry member data, so a referral pilot would hit the PHI approval wall. HR has real pain and measurable hours.",
+      "Why HR first, not referrals: referrals carry member data, so a referral pilot would hit the PHI approval wall.",
       "The −30% is a hypothesis to test against a two-week time-study baseline, not a promise.",
-      "AI is a small part of the pilot: it only drafts reminder text. The value comes from the work items and timers.",
+      "AI is a small part of the pilot. The value comes from the work items and timers.",
     ],
   },
 
-  /* 4 ------------------------------------------------------------ architecture */
+  /* 5 ------------------------------------------------------------ tech stack pipeline */
+  {
+    id: "stack",
+    section: "Tech stack",
+    title: "The tech stack, left to right",
+    content: (
+      <>
+        <Head eyebrow="Recommended tech stack" title="Built on Microsoft tools, connected left to right"
+          lede="Power Platform and Copilot Studio cover integration, tracking, AI and reporting under one licence family, one sign-in and one set of security controls." />
+        <Pipeline steps={stackFlow} label="Technology pipeline" />
+        <div className="row g-2" style={{ fontSize: ".88em" }}>
+          <div className="col-12 col-lg-6"><Plain>Data moves left to right: it starts in today&rsquo;s tools, gets connected, tracked in one place, gets AI help only where useful, and shows up where people already work.</Plain></div>
+          <div className="col-12 col-lg-6">
+            <div className="panel h-100">
+              <span className="label">Confirm in discovery</span>
+              <p className="mt-1">Which Microsoft 365 and Power Platform licences exist today, whether staff are on Teams or Slack, and which Microsoft services are covered by the organization&rsquo;s HIPAA BAA with Microsoft.</p>
+            </div>
+          </div>
+        </div>
+      </>
+    ),
+    notes: [
+      "Why Microsoft: one identity (Entra ID), one security model, low-code tools the team can maintain, and Microsoft signs a HIPAA BAA for many of these services. Confirm scope service by service.",
+      "If the organization stays on Slack, Power Automate can still post reminders there. Teams is the better home for the Copilot Studio agent.",
+      "The architecture stays portable: the same layers would work with other tools if licensing rules Microsoft out.",
+    ],
+  },
+
+  /* 6 ------------------------------------------------------------ architecture */
   {
     id: "architecture",
     section: "Q3 · Architecture",
     title: "Solution architecture",
     content: (
       <>
-        <Head eyebrow="Solution architecture" q="Q3" title="One integration layer, one orchestration core, AI behind a gate" />
+        <Head eyebrow="Solution architecture" q="Q3" title="One connection layer, one shared record, AI behind a gate" />
         <ArchitectureDiagram />
         <div className="row g-2" style={{ fontSize: ".88em" }}>
           {[
-            ["Structured data", "Work items, events, owners, SLAs in a relational store (Postgres)."],
-            ["Unstructured", "Policies and SOPs in the existing document repository, indexed for RAG."],
-            ["Identity", "SSO with the existing identity provider; roles from Rippling job data."],
-            ["Notifications", "Slack first, email fallback, daily digest instead of message floods."],
+            ["Structured data", "Work items, events, owners, due dates in Dataverse tables."],
+            ["Unstructured", "Policies and SOPs in a SharePoint library, indexed for the agent."],
+            ["Identity", "Entra ID single sign-on with MFA; security roles from job role."],
+            ["Notifications", "Teams first, Outlook fallback, one daily digest instead of a flood."],
           ].map(([k, v]) => (
             <div className="col-12 col-md-6 col-xl-3" key={k}><span className="label">{k}</span><div>{v}</div></div>
           ))}
         </div>
+        <Plain>Information flows one way: from today&rsquo;s tools, into one shared record, and out to people in Teams and Power BI. AI never reaches into the source systems directly.</Plain>
       </>
     ),
     notes: [
-      "Walk left to right: sources → integration → core → AI → where people already work (Slack, email).",
-      "The cloud provider is not chosen yet. The design only needs a managed database, a workflow runner and an LLM provider that will sign a BAA. Pick these in discovery based on what the organization already licenses.",
-      "Dashed boxes mark integrations we have not confirmed: RingCentral API access and the healthcare-specific systems.",
+      "Walk left to right: where data starts → connect → track → think → where people see it.",
+      "Dashed boxes are integrations we haven't confirmed yet: RingCentral API access and the healthcare-specific systems.",
     ],
   },
 
-  /* 5 ------------------------------------------------------------ AI vs automation */
+  /* 7 ------------------------------------------------------------ AI vs automation */
   {
     id: "ai-vs-automation",
     section: "Q4 · AI vs automation",
@@ -193,28 +343,29 @@ const core: SlideDef[] = [
     content: (
       <>
         <Head eyebrow="AI vs automation" q="Q4" title="Which tool for which job"
-          lede="Default to the cheapest deterministic option. AI is used only where the input or output is unstructured language." />
+          lede="Default to the simplest dependable option. AI is used only where the input or output is everyday language." />
+        <ToolSplit />
         <div className="table-wrap">
           <table className="table matrix align-middle mb-0">
             <thead>
               <tr>
                 <th style={{ minWidth: 190 }}>Component</th>
                 {["Workflow", "Rules", "API", "RPA", "GenAI", "ML", "RAG", "Agentic", "Human"].map((h) => <th key={h} className="text-center">{h}</th>)}
-                <th style={{ minWidth: 240 }}>Why</th>
+                <th style={{ minWidth: 240 }}>Why · Microsoft tool</th>
               </tr>
             </thead>
             <tbody>
               {[
-                ["Work items, SLAs, escalation", "●●●○○○○○○", "Must be predictable and auditable."],
-                ["Sync from Rippling / Jotform", "○○●○○○○○○", "APIs exist; integration beats re-typing."],
-                ["Systems without APIs", "○○○●○○○○○", "Last resort, after confirming no export or API."],
-                ["Reminder & nudge text", "○○○○●○○○●", "Language task; human approves external messages."],
-                ["Policy & SOP answers", "○○○○○○●○○", "Must be grounded in approved text, with citations."],
-                ["ER documentation drafts", "○○○○●○○○●", "AI drafts, supervisor and HR decide."],
-                ["Recurring reports", "●○●○○○○○○", "Data pull + template; AI only for narrative summary."],
-                ["Member risk signals (Ph. 2)", "○●○○○●○○●", "Start with rules; ML only once there is labeled history."],
-                ["Multi-step autonomous actions", "○○○○○○○●●", "Not in Phase 1. Revisit with audit history."],
-                ["Hiring, discipline, eligibility", "○○○○○○○○●", "People decide. AI never makes these calls."],
+                ["Work items, due dates, escalation", "●●●○○○○○○", "Must be predictable and auditable · Power Automate + Dataverse"],
+                ["Sync from Rippling / Jotform", "○○●○○○○○○", "Connectors beat re-typing · Power Automate connectors"],
+                ["Systems without APIs", "○○○●○○○○○", "Last resort · Power Automate Desktop"],
+                ["Reminder & nudge text", "○○○○●○○○●", "Language task; human approves · Copilot Studio"],
+                ["Policy & SOP answers", "○○○○○○●○○", "Grounded in approved text · Copilot Studio + SharePoint"],
+                ["ER documentation drafts", "○○○○●○○○●", "AI drafts, people decide · Copilot Studio"],
+                ["Recurring reports", "●○●○○○○○○", "Data + template · Power BI"],
+                ["Member risk signals (Ph. 2)", "○●○○○●○○●", "Rules first, ML later · Fabric"],
+                ["Multi-step autonomous actions", "○○○○○○○●●", "Not in Phase 1"],
+                ["Hiring, discipline, eligibility", "○○○○○○○○●", "People decide. Always."],
               ].map(([c, m, w]) => (
                 <tr key={c}>
                   <td className="fw-semibold">{c}</td>
@@ -225,15 +376,36 @@ const core: SlideDef[] = [
             </tbody>
           </table>
         </div>
+        <Plain>Most of the work is plain automation that always does the same thing. AI only helps with writing, and a person checks it.</Plain>
       </>
     ),
     notes: [
-      "This slide answers 'do you know when not to use AI'. Out of ten components, only three use generative AI, and each one has a human checkpoint.",
-      "Agentic AI is explicitly deferred: we want months of audit logs and stable workflows before letting software take multi-step actions.",
+      "This answers 'do you know when not to use AI'. Three of ten components use generative AI, and each has a human checkpoint.",
+      "Agentic AI is deferred until there are months of audit history and stable workflows.",
     ],
   },
 
-  /* 6 ------------------------------------------------------------ orchestration */
+  /* ------------------------------------------------------------ execution blueprint */
+  {
+    id: "blueprint",
+    section: "Execution blueprint",
+    title: "Agent, workflow, or both",
+    content: (
+      <>
+        <Head eyebrow="Execution blueprint" title="For each use case: agent, workflow, or both"
+          lede="Workflow when the steps are fixed. AI agent when the work is language. Both when a fixed process needs some writing done. Filter to compare." />
+        <Blueprint />
+        <Plain>Six of twelve use cases are plain workflows, and only one is agent-only. Agents only draft, summarize or answer. They never make a decision or act without a flow and a person behind them.</Plain>
+      </>
+    ),
+    notes: [
+      "Agents in Phase 1: HR Assistant (reminders, ER drafts), Policy Assistant, Chief-of-staff brief, Regulatory watch. All are Copilot Studio agents in Teams.",
+      "Agent actions (snooze, reassign, create task) always call a Power Automate flow, so every action is logged and checked against the user's role.",
+      "Filter by Phase 2 to show what waits for approval.",
+    ],
+  },
+
+  /* 8 ------------------------------------------------------------ orchestration */
   {
     id: "orchestration",
     section: "Q5 · Orchestration",
@@ -241,38 +413,38 @@ const core: SlideDef[] = [
     content: (
       <>
         <Head eyebrow="Follow-up & work orchestration" q="Q5" title="One reusable engine, not one tracker per department"
-          lede="Every workflow is the same shape: something is missing, someone owns the next step, a clock is running. Build that once, then configure it per workflow." />
+          lede="Every workflow has the same shape: something is missing, someone owns the next step, a clock is running. Build that once, then set it up per workflow." />
         <LifecycleDiagram />
         <div className="row g-3">
           <div className="col-12 col-lg-6">
             <div className="panel h-100">
               <h3>What the engine identifies</h3>
               <ul style={{ fontSize: ".92em" }}>
-                <li><b>Missing information:</b> checklist items per template that are not yet complete</li>
+                <li><b>Missing information:</b> checklist items not yet complete</li>
                 <li><b>Owner:</b> a named person, never a team inbox; unknown → triage queue</li>
-                <li><b>Due date & aging:</b> SLA per item type, business-hours clock</li>
-                <li><b>Exceptions:</b> reopened, reassigned 3+ times, or waiting on an external party</li>
-                <li><b>Escalation:</b> tiered (owner → manager → department lead), set by rules</li>
+                <li><b>Due date & aging:</b> agreed turnaround per item type, in business hours</li>
+                <li><b>Exceptions:</b> reopened, reassigned 3+ times, or waiting on an outside party</li>
+                <li><b>Escalation:</b> owner → manager → department lead, by rule</li>
               </ul>
             </div>
           </div>
           <div className="col-12 col-lg-6">
             <div className="panel is-pine h-100">
               <h3>Why reusable</h3>
-              <p style={{ fontSize: ".92em" }}>A new workflow (enrollment documents, ER action items, report sign-offs) is a <b>template</b>: item types, checklist, SLAs, escalation path. There is no new code and no new dashboard. Leadership sees one view of stuck work across the whole organization.</p>
+              <p style={{ fontSize: ".92em" }}>A new workflow (enrollment documents, ER action items, report sign-offs) is a <b>template row in Dataverse</b>: item types, checklist, due dates, escalation path. There is no new app and no new dashboard. Leadership sees one view of stuck work across the organization.</p>
             </div>
           </div>
         </div>
+        <Plain>Build one &ldquo;what&rsquo;s waiting, and on whom&rdquo; engine once, and reuse it for HR, referrals and everything else.</Plain>
       </>
     ),
     notes: [
       "This is the core of the proposal. HR is the first template and referrals are the second.",
-      "Pausing the clock requires a logged reason, so 'waiting on vendor' cannot become a hiding place.",
-      "The data model is in appendix A2.",
+      "Pausing the clock requires a logged reason, so 'waiting on vendor' can't become a hiding place.",
     ],
   },
 
-  /* 7 ------------------------------------------------------------ security */
+  /* 9 ------------------------------------------------------------ security */
   {
     id: "security",
     section: "Q6 · Security",
@@ -283,28 +455,83 @@ const core: SlideDef[] = [
         <PhaseBoundaryDiagram />
         <div className="row g-2" style={{ fontSize: ".86em" }}>
           {[
-            ["PHI / HIPAA", "Phase 1 handles no PHI. Phase 2 runs only on HIPAA-eligible services with signed BAAs and approval from the governing bodies."],
-            ["Access", "SSO + MFA, role-based access from job role, least privilege, quarterly access review."],
-            ["Encryption", "TLS in transit, AES-256 at rest, keys managed by the cloud KMS, member store separately keyed."],
-            ["Audit & logging", "Append-only event log; prompts and responses logged with redaction; retention set by policy."],
-            ["Model data use", "Enterprise API terms: no training on our data, zero retention. Consumer AI tools blocked."],
-            ["Leakage & hallucination", "Field allowlist before any AI call, PHI classifier as a second check, citations required, human approval on outbound text."],
+            ["PHI / HIPAA", "Phase 1 handles no PHI. Phase 2 runs in a separate Power Platform environment, only on services covered by the Microsoft BAA, and only after the governing bodies approve."],
+            ["Access", "Entra ID SSO + MFA, Dataverse security roles, least privilege, quarterly access review."],
+            ["Encryption", "TLS in transit, encryption at rest by default; customer-managed keys for the Phase 2 environment."],
+            ["Audit & logging", "Dataverse auditing, Purview audit log, Copilot Studio conversation transcripts with a set retention period."],
+            ["Model data use", "Azure OpenAI through Copilot Studio: prompts are not used to train models. Consumer AI tools are blocked by policy."],
+            ["Leakage & hallucination", "Purview DLP policies, a field allowlist before any AI call, answers must cite sources, a person approves outbound text."],
           ].map(([k, v]) => (
             <div className="col-12 col-md-6 col-xl-4" key={k}>
               <div className="panel h-100"><span className="label">{k}</span><p className="mt-1">{v}</p></div>
             </div>
           ))}
         </div>
+        <Plain>Patient information lives in a separate, locked area. AI is switched off for it until the governing bodies say yes in writing.</Plain>
       </>
     ),
     notes: [
-      "The separation is architectural, not just a policy: member data lives in its own store, and the route from that store to the AI gateway does not exist in Phase 1 configuration.",
-      "The allowlist is the primary control and the classifier is a backstop. We allow known-safe fields instead of trying to detect every kind of PHI.",
-      "Third-party providers: a provider qualifies for Phase 2 only with a BAA, zero retention, a US data region, and SOC 2 Type II.",
+      "The separation is architectural: a separate environment with its own data and its own DLP policy, and no route from it to the AI services in Phase 1.",
+      "Confirm with Microsoft which exact services (Copilot Studio, Azure OpenAI, Dataverse) are in scope of the organization's BAA before Phase 2.",
     ],
   },
 
-  /* 8 ------------------------------------------------------------ knowledge assistant */
+  /* ------------------------------------------------------------ roles & permissions */
+  {
+    id: "roles",
+    section: "Roles & access",
+    title: "Roles & access permissions",
+    content: (
+      <>
+        <Head eyebrow="Access permission roles" title="Who can see and do what"
+          lede="Each role is an Entra ID group mapped to a Dataverse security role and SharePoint permissions. People get the least access their job needs, reviewed every quarter." />
+        <div className="table-wrap">
+          <table className="table matrix roles align-middle mb-0">
+            <thead>
+              <tr>
+                <th style={{ minWidth: 170 }}>Role</th>
+                {["Work items", "Approve AI drafts", "Templates & due dates", "ER records", "Policy library", "Power BI", "Member data (Ph. 2)", "Environments"].map((h) => <th key={h} className="text-center">{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {([
+                ["Employee", "own", "—", "—", "—", "read", "—", "—", "—"],
+                ["Hiring manager / supervisor", "own + team", "—", "—", "submit", "read", "team", "—", "—"],
+                ["HR staff", "all HR", "yes", "—", "—", "read", "HR", "—", "—"],
+                ["HR lead / ER specialist", "all HR", "yes", "edit", "full", "read", "HR", "—", "—"],
+                ["Intake coordinator", "own referrals", "—", "—", "—", "read", "program", "after approval", "—"],
+                ["Program lead", "all program", "yes", "edit", "—", "read", "program", "after approval", "—"],
+                ["Policy owner / compliance", "own", "—", "—", "—", "edit / approve", "—", "—", "—"],
+                ["Executive / CEO", "counts", "—", "—", "—", "read", "all (no member detail)", "—", "—"],
+                ["Maker / developer", "DEV only", "—", "DEV only", "—", "—", "DEV only", "—", "DEV"],
+                ["Power Platform admin", "—", "—", "—", "—", "—", "—", "—", "DEV · QA · PROD"],
+              ] as string[][]).map(([role, ...cells]) => (
+                <tr key={role}>
+                  <td className="fw-semibold">{role}</td>
+                  {cells.map((c, i) => {
+                    const cls = c === "—" ? "lvl-none" : c.startsWith("after") ? "lvl-gate" : /full|all|edit|yes|DEV ·/.test(c) ? "lvl-full" : c.startsWith("read") || c === "counts" ? "lvl-read" : "lvl-own";
+                    return <td key={i} className={`cell ${cls}`}>{c}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="row g-2" style={{ fontSize: ".86em" }}>
+          <div className="col-12 col-lg-4"><div className="panel h-100"><span className="label">Agents use the asker&rsquo;s access</span><p className="mt-1">A Copilot Studio agent answers with the signed-in user&rsquo;s permissions, so it can never show something that person couldn&rsquo;t open themselves.</p></div></div>
+          <div className="col-12 col-lg-4"><div className="panel h-100"><span className="label">Makers never touch production</span><p className="mt-1">Developers build in DEV. Changes reach QA and PROD only through Power Platform Pipelines, with an approval step.</p></div></div>
+          <div className="col-12 col-lg-4"><div className="panel is-signal h-100"><span className="label">Member data is separate</span><p className="mt-1">The Phase 2 environment has its own security group. Nobody gets access until approval, and access is logged and reviewed.</p></div></div>
+        </div>
+        <Plain>Everyone sees only what their job needs. The AI follows the same rules as the person asking.</Plain>
+      </>
+    ),
+    notes: [
+      "Implementation: Entra ID security groups → Dataverse business units and security roles → SharePoint groups → Power BI row-level security. One group membership drives all four.",
+      "ER records live in a separate restricted Dataverse table. Even HR staff outside ER can't read them.",
+    ],
+  },
+
+  /* 10 ------------------------------------------------------------ knowledge assistant */
   {
     id: "knowledge",
     section: "Q7 · Knowledge assistant",
@@ -317,32 +544,32 @@ const core: SlideDef[] = [
           <div className="col-12 col-lg-4">
             <div className="panel h-100">
               <h3>Source authority</h3>
-              <p>Ranking: regulation &gt; board policy &gt; department SOP &gt; training material. Only documents with an owner and approval date are indexed. Drafts are never indexed.</p>
+              <p>Ranking: regulation &gt; board policy &gt; department SOP &gt; training. Only documents in the approved SharePoint library, with an owner and approval date, are used. Drafts never are.</p>
             </div>
           </div>
           <div className="col-12 col-lg-4">
             <div className="panel h-100">
               <h3>Versions, conflicts, expiry</h3>
-              <p>A new version supersedes the old one in the index. Expired documents stay archived but are never retrieved. If two current sources conflict, the assistant shows both and flags the owner.</p>
+              <p>SharePoint versioning keeps history; only the current approved version is indexed. Expired documents are archived and never used. If two current sources conflict, the assistant shows both and flags the owner.</p>
             </div>
           </div>
           <div className="col-12 col-lg-4">
             <div className="panel is-signal h-100">
               <h3>When it can’t find an answer</h3>
-              <p>It says it found no approved policy on the question, links the closest related section, and creates a work item for the policy owner. The gap is logged so it can feed the next policy update.</p>
+              <p>It says so, links the closest related section, and creates a work item for the policy owner. The gap is logged for the next policy update.</p>
             </div>
           </div>
         </div>
+        <Plain>Staff ask a question in Teams and get an answer quoted from the real policy, with a link to it. If the policy doesn&rsquo;t say, the assistant says so and doesn&rsquo;t guess.</Plain>
       </>
     ),
     notes: [
-      "Permissions are enforced at retrieval: a supervisor-only SOP is never retrieved for a frontline question, so the model can't leak it.",
-      "Drafting assistance for policy updates comes later. It drafts redlines for the owner and never publishes.",
-      "Regulatory monitoring: scheduled checks of named sources (CMS, the state Medicaid agency) produce a digest for a human to triage. It never auto-updates policy.",
+      "Built as a Copilot Studio agent in Teams, with the SharePoint library as its knowledge source and generative answers restricted to that source.",
+      "Permissions follow SharePoint: a supervisor-only SOP is never used to answer a frontline question.",
     ],
   },
 
-  /* 9 ------------------------------------------------------------ referral + accessibility */
+  /* 11 ------------------------------------------------------------ referral + accessibility */
   {
     id: "referral",
     section: "Q8–Q9 · Referral & access",
@@ -376,68 +603,53 @@ const core: SlideDef[] = [
             </div>
           </div>
         </div>
+        <Plain>Referrals get the same &ldquo;owner and due date&rdquo; treatment now. AI helps later, after approval. Members without phones are always reached by a person.</Plain>
       </>
     ),
     notes: [
-      "The referral workflow can mostly be built now, because rules and workflow aren't AI. The restriction is on AI platforms using member-level data, so we confirm in discovery that the workflow tool itself is acceptable for PHI under a BAA.",
-      "The 'prospect' queue fixes the side-spreadsheet problem: not-yet-eligible referrals get a re-check date and an owner.",
-      "Accessibility: the channel is a member attribute, and every digital path has a human fallback.",
+      "Most of the referral workflow can be built now, because rules and workflow aren't AI. Confirm that Power Platform itself is acceptable for PHI under the BAA.",
+      "The 'prospect' queue replaces the side spreadsheets: not-yet-eligible referrals get a re-check date and an owner.",
     ],
   },
 
-  /* 10 ------------------------------------------------------------ roadmap */
+  /* 12 ------------------------------------------------------------ roadmap */
   {
     id: "roadmap",
     section: "Q10 · Roadmap",
     title: "Phased roadmap",
     content: (
       <>
-        <Head eyebrow="Implementation approach" q="Q10" title="Five gates, each with an exit test" />
+        <Head eyebrow="Implementation approach" q="Q10" title="Five stages, each with a test before moving on" />
+        <RoadmapGantt />
         <div className="gate-list">
           {[
-            ["Discovery", "2–3 wks", "Process maps, time study baseline, API & BAA check per system, approval requirements from governing bodies.", "Baseline hours measured; APIs confirmed; pilot scope signed off."],
-            ["Prototype", "3–4 wks", "Engine + HR template on sample data; Slack nudges; drafting prompt tested.", "HR walks through it and confirms it matches real work."],
-            ["Pilot", "6–8 wks", "One HR team live; weekly metrics; draft-edit rate tracked.", "Hours down vs. baseline; no missed SLAs going unseen; users keep using it."],
-            ["Production", "4 wks", "All HR; monitoring, runbooks, access review, support owner.", "Security review passed; uptime and alerting in place."],
-            ["Expansion", "ongoing", "Referral template (rules), knowledge assistant, CEO brief; Phase 2 once approved.", "Each new template reuses the engine without new code."],
-          ].map(([t, d, b, e]) => (
+            ["Discovery", "Process maps, time-study baseline, licence & API check, approval criteria.", "Baseline measured; pilot scope signed off."],
+            ["Prototype", "Dataverse tables + HR template in a DEV environment; Teams reminders.", "HR confirms it matches real work."],
+            ["Pilot", "One HR team live from the QA→PROD pipeline; weekly metrics.", "Hours down vs baseline; adoption holding."],
+            ["Production", "All HR; monitoring, runbooks, access review, support owner.", "Security review passed; alerting live."],
+            ["Expansion", "Referral template, knowledge assistant, CEO brief; Phase 2 once approved.", "New templates reuse the engine."],
+          ].map(([t, b, e]) => (
             <div className="gate" key={t}>
-              <div className="d-flex justify-content-between align-items-baseline"><h3>{t}</h3><span className="label">{d}</span></div>
-              <p className="mb-0" style={{ fontSize: ".86em" }}>{b}</p>
-              <div className="exit"><b>Exit test</b>{e}</div>
+              <h3>{t}</h3>
+              <p className="mb-0" style={{ fontSize: ".84em" }}>{b}</p>
+              <div className="exit"><b>Move on when</b>{e}</div>
             </div>
           ))}
         </div>
-        <div className="row g-3">
-          <div className="col-12 col-lg-7">
-            <div className="panel">
-              <h3>Open questions for discovery</h3>
-              <ul className="mb-0" style={{ fontSize: ".9em" }}>
-                <li>Which of Rippling, Jotform and RingCentral offer API access and a BAA on the current plan?</li>
-                <li>What is the source of truth for referrals and members today? Which healthcare systems are involved?</li>
-                <li>Which identity provider is used (Google, Microsoft), and does every employee have an account?</li>
-                <li>What exactly will the governing bodies need to review, and how long does it take?</li>
-              </ul>
-              <p className="mb-0 mt-1 text-body-secondary" style={{ fontSize: ".85em" }}>Full list in appendix A1.</p>
-            </div>
-          </div>
-          <div className="col-12 col-lg-5">
-            <div className="panel is-pine h-100">
-              <h3>Asks for this meeting</h3>
-              <ol className="mb-0" style={{ fontSize: ".9em", paddingLeft: "1.1rem" }}>
-                <li>Agree on HR follow-up as the pilot</li>
-                <li>Name an HR lead and an executive sponsor</li>
-                <li>Start the approval conversation with the governing bodies now, in parallel</li>
-              </ol>
-            </div>
-          </div>
+        <div className="panel is-pine">
+          <h3>Asks for this meeting</h3>
+          <ol className="mb-0" style={{ fontSize: ".9em", paddingLeft: "1.1rem" }}>
+            <li>Agree on HR follow-up as the pilot</li>
+            <li>Name an HR lead and an executive sponsor</li>
+            <li>Start the approval conversation with the governing bodies now, in parallel</li>
+          </ol>
         </div>
       </>
     ),
     notes: [
-      "Durations are estimates to be re-planned after discovery.",
-      "Approval for Phase 2 runs in parallel from week one, so it isn't on the critical path later.",
-      "Close with the three asks.",
+      "Durations are estimates to re-plan after discovery. Hover the bars for each stage's test.",
+      "The approval track starts in week one so it isn't on the critical path later.",
+      "Discovery questions are in appendix A1.",
     ],
   },
 ];

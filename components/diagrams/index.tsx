@@ -7,12 +7,12 @@ export function ArchitectureDiagram() {
   return (
     <Figure
       viewBox="0 0 1200 540"
-      label="Layered architecture: source systems feed an integration layer, which normalizes events into one orchestration core; AI services sit behind a PHI gate and serve Slack, a work queue, digests and the CEO brief."
-      caption="Every source talks to the orchestration core through one integration layer. AI never reads a source system directly: requests go through the PHI gate and the LLM gateway. Dashed = needs technical discovery."
+      label="Microsoft-based architecture: source systems connect through Power Automate into Dataverse tables; a Copilot Studio agent with Azure OpenAI and SharePoint knowledge sits behind a PHI gate; people see results in Teams, Power Apps, Outlook and Power BI."
+      caption="Every system connects through Power Automate into one set of Dataverse tables. AI never reads a source system directly: requests pass the PHI gate first. Dashed = needs technical discovery (API access, licences)."
     >
       {/* column headers */}
       {[
-        [110, "SOURCE SYSTEMS"], [350, "INTEGRATION"], [610, "ORCHESTRATION CORE"], [870, "AI SERVICES"], [1100, "WHERE PEOPLE WORK"],
+        [110, "WHERE DATA STARTS"], [350, "CONNECT"], [610, "TRACK (DATAVERSE)"], [870, "THINK (AI)"], [1100, "WHERE PEOPLE SEE IT"],
       ].map(([x, t]) => <Label key={t as string} x={x as number} y={36}>{t}</Label>)}
 
       {/* sources */}
@@ -22,25 +22,25 @@ export function ArchitectureDiagram() {
       ))}
 
       {/* integration */}
-      <Box x={260} y={colY} w={180} h={106} lines={["API & webhook", "connectors", "Rippling · Jotform · Slack"]} />
-      <Box x={260} y={colY + 118} w={180} h={106} lines={["Workflow runner", "(iPaaS, e.g. n8n)", "schedules · retries"]} />
-      <Box x={260} y={colY + 236} w={180} h={104} lines={["RPA / CSV import", "fallback where", "no API exists"]} dashed tone="muted" />
+      <Box x={260} y={colY} w={180} h={106} lines={["Power Automate", "connectors", "Jotform · QuickBooks · Slack"]} />
+      <Box x={260} y={colY + 118} w={180} h={106} lines={["Custom connectors", "Rippling · RingCentral", "(API check in discovery)"]} />
+      <Box x={260} y={colY + 236} w={180} h={104} lines={["Power Automate", "Desktop (RPA) / CSV", "only where no API"]} dashed tone="muted" />
 
       {/* orchestration core */}
       <rect x={500} y={colY} width={220} height={340} rx={8} style={{ fill: "var(--pine-soft)", stroke: "var(--pine)", strokeWidth: 2 }} />
-      <Box x={516} y={colY + 16} w={188} h={66} lines={["Work-item store", "owner · waiting on · due"]} />
-      <Box x={516} y={colY + 94} w={188} h={66} lines={["Rules & SLA engine", "aging · escalation tiers"]} />
+      <Box x={516} y={colY + 16} w={188} h={66} lines={["Work-item tables", "owner · waiting on · due"]} />
+      <Box x={516} y={colY + 94} w={188} h={66} lines={["Timers & escalation", "scheduled cloud flows"]} />
       <Box x={516} y={colY + 172} w={188} h={66} lines={["Workflow templates", "HR · referral · ER · reports"]} />
-      <Box x={516} y={colY + 250} w={188} h={74} lines={["Event & audit log", "append-only history"]} />
+      <Box x={516} y={colY + 250} w={188} h={74} lines={["History & audit", "Dataverse auditing"]} />
 
       {/* AI services */}
-      <Box x={780} y={colY} w={180} h={70} lines={["PHI gate", "field allowlist + classifier"]} tone="amber" />
-      <Box x={780} y={colY + 84} w={180} h={78} lines={["LLM gateway", "zero-retention · BAA", "drafts & summaries only"]} />
-      <Box x={780} y={colY + 176} w={180} h={78} lines={["RAG index", "approved policy", "versions only"]} />
-      <Box x={780} y={colY + 268} w={180} h={72} lines={["Prompt / response", "log + evaluation"]} />
+      <Box x={780} y={colY} w={180} h={70} lines={["PHI gate", "field allowlist + Purview DLP"]} tone="amber" />
+      <Box x={780} y={colY + 84} w={180} h={78} lines={["Copilot Studio agent", "Azure OpenAI models", "drafts & summaries only"]} />
+      <Box x={780} y={colY + 176} w={180} h={78} lines={["Knowledge (RAG)", "SharePoint library", "+ Azure AI Search"]} />
+      <Box x={780} y={colY + 268} w={180} h={72} lines={["Conversation logs", "Copilot Studio analytics"]} />
 
       {/* experience */}
-      {["Slack bot & nudges", "Work queue (web)", "Daily email digest", "CEO weekly brief", "Policy Q&A"].map((t, i) => (
+      {["Teams agent & nudges", "Power Apps work queue", "Outlook daily digest", "Power BI CEO brief", "Policy Q&A in Teams"].map((t, i) => (
         <Box key={t} x={1020} y={colY + i * 69} w={160} h={58} lines={[t]} />
       ))}
 
@@ -57,7 +57,7 @@ export function ArchitectureDiagram() {
 
       {/* cross-cutting band */}
       <Label x={20} y={462} anchor="start">APPLIES TO EVERY LAYER</Label>
-      {["SSO + MFA", "Role-based access", "Encryption", "Audit logging", "Monitoring", "Admin console", "Human approvals"].map((t, i) => (
+      {["Entra ID SSO + MFA", "Security roles", "Purview DLP", "Audit logs", "Monitoring", "DEV · QA · PROD", "Approvals"].map((t, i) => (
         <Box key={t} x={20 + i * 166} y={474} w={154} h={44} lines={[t]} tone="muted" bold={false} />
       ))}
     </Figure>
@@ -113,7 +113,7 @@ export function PhaseBoundaryDiagram() {
       <Box x={40} y={86} w={210} h={60} lines={["HR, recruiting, onboarding", "staff data only"]} />
       <Box x={40} y={160} w={210} h={60} lines={["Policies & SOPs", "approved documents"]} />
       <Box x={40} y={234} w={210} h={60} lines={["Referral counts & aging", "IDs only, no member detail"]} />
-      <Box x={290} y={120} w={210} h={130} lines={["AI services", "LLM gateway · RAG", "zero data retention", "enterprise terms"]} tone="plain" />
+      <Box x={290} y={120} w={210} h={130} lines={["AI services", "Copilot Studio", "Azure OpenAI", "no training on our data"]} tone="plain" />
       <Arrow x1={250} y1={116} x2={288} y2={150} />
       <Arrow x1={250} y1={190} x2={288} y2={190} />
 
@@ -124,10 +124,10 @@ export function PhaseBoundaryDiagram() {
       {/* phase 2 */}
       <rect x={630} y={40} width={500} height={270} rx={10} style={{ fill: "var(--surface-2)", stroke: "var(--line)", strokeWidth: 1.6, strokeDasharray: "6 5" }} />
       <Label x={650} y={66} anchor="start">PHASE 2 · MEMBER-LEVEL · AFTER APPROVAL</Label>
-      <Box x={900} y={86} w={210} h={60} lines={["Member records", "separate encrypted store"]} tone="muted" />
+      <Box x={900} y={86} w={210} h={60} lines={["Member records", "separate environment"]} tone="muted" />
       <Box x={900} y={160} w={210} h={60} lines={["Call transcripts", "RingCentral"]} tone="muted" />
       <Box x={900} y={234} w={210} h={60} lines={["Risk signals · SMS", "check-ins"]} tone="muted" />
-      <Box x={650} y={120} w={210} h={130} lines={["Rules & workflow", "run today without AI", "(reminders, SLAs)"]} tone="plain" />
+      <Box x={650} y={120} w={210} h={130} lines={["Power Automate", "rules run today", "without AI"]} tone="plain" />
       <Arrow x1={898} y1={190} x2={862} y2={190} />
 
       {/* blocked path */}
@@ -148,9 +148,9 @@ export function RagDiagram() {
       label="Knowledge assistant flow: approved documents are ingested with owner, version and effective dates; questions are filtered by the asker's permissions; answers cite sources, or the assistant says it found no authoritative answer and routes the question to the policy owner."
       caption="The model may only rephrase what retrieval returns. If no current, approved passage clears the relevance bar, the assistant declines and routes the question to the policy owner."
     >
-      <Box x={20} y={y} w={170} h={h} lines={["Approved docs", "SharePoint / Drive"]} />
+      <Box x={20} y={y} w={170} h={h} lines={["Approved docs", "SharePoint library"]} />
       <Box x={230} y={y} w={190} h={h} lines={["Ingest + metadata", "owner · version · effective", "expiry · audience"]} />
-      <Box x={460} y={y} w={170} h={h} lines={["Index", "current versions only"]} tone="pine" />
+      <Box x={460} y={y} w={170} h={h} lines={["Azure AI Search", "current versions only"]} tone="pine" />
       <Box x={670} y={y} w={190} h={h} lines={["Retrieve", "filtered by asker's role"]} />
       <Box x={900} y={y - 20} w={230} h={60} lines={["Answer + citations", "doc · section · version"]} tone="pine" />
       <Box x={900} y={y + 60} w={230} h={60} lines={["No authoritative answer", "say so · route to owner"]} tone="amber" />
